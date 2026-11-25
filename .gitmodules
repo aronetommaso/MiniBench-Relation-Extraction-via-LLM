@@ -1,0 +1,12 @@
+[submodule "external/VCL"]
+	path = external/VCL
+	url = https://github.com/unimib-datAI/VCL.git
+	branch = parallelization
+[submodule "external/DeepRead"]
+	path = external/DeepRead
+	url = https://github.com/Zhanli-Li/DeepRead.git
+	branch = main
+[submodule "external/MemAgent"]
+	path = external/MemAgent
+	url = https://github.com/BytedTsinghua-SIA/MemAgent.git
+	branch = main
