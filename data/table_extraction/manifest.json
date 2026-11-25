@@ -1,0 +1,1598 @@
+{
+  "dataset": "aoe",
+  "revision": "9ff4acb5478180b5edd5397c9209af8c81389333",
+  "evaluator_revision": "28a4d6b0937dbfc55a425392b6bb5c7f5789a8b4",
+  "sources": {
+    "all_AOE_tables.jsonl": {
+      "url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/all_AOE_tables.jsonl",
+      "sha256": "5ec68ccc9abae3731cb7f65865d4be2817c78fa068e40f4d6234329eae792999",
+      "bytes": 3482912
+    },
+    "documents.tar": {
+      "url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "sha256": "b8627391eb13fdf88cea5629c0824f36c7eae114b29fb8cf3fefd8b35a9e98e5",
+      "bytes": 33189545
+    },
+    "medical_tree.json": {
+      "url": "https://huggingface.co/api/datasets/tianyumyum/AOE/tree/9ff4acb5478180b5edd5397c9209af8c81389333/medical?recursive=true",
+      "sha256": "244b41ecfef8be43737da68c1efa43ca4e1c2a8e5c9361ad56d9e1b390ed43cc",
+      "bytes": 52345
+    }
+  },
+  "sampling": {
+    "seed": 42,
+    "pilot_size": 2,
+    "test_size": 12,
+    "max_tokens": 100000
+  },
+  "token_estimator": "Sum of ceil(UTF-8 bytes / 4) per source document. Model-independent approximation.",
+  "instances": {
+    "pilot": [
+      {
+        "record_id": "academic_PMD_1_en",
+        "domain": "academic",
+        "task": "academic_1",
+        "utf8_bytes": 78060,
+        "estimated_tokens": 19516,
+        "source_documents": [
+          "academic/Efficient Mirror Detection via Multi-level Heterogeneous Learning.md",
+          "academic/SAM2-UNet Segment Anything 2 Makes Strong Encoder for Natural and Medical Image Segmentation.md"
+        ]
+      },
+      {
+        "record_id": "medical_fmed-12-1607970_table_5_en",
+        "domain": "medical",
+        "task": "medical_0",
+        "utf8_bytes": 41759,
+        "estimated_tokens": 10441,
+        "source_documents": [
+          "medical/Mycoplasma_pneumoniae-associated_Fuchs_syndrome.md",
+          "medical/Mycoplasma_pneumoniae-induced_rash_and_mucositis_in_the_prev.md",
+          "medical/Mycoplasma_pneumoniae-associated_mucositis__a_recently_descr.md"
+        ]
+      }
+    ],
+    "test": [
+      {
+        "record_id": "academic_32_0_en",
+        "domain": "academic",
+        "task": "academic_0",
+        "utf8_bytes": 131182,
+        "estimated_tokens": 32797,
+        "source_documents": [
+          "academic/50a19e337519c014d31f9c005daa37d971a76afd.md",
+          "academic/416fcbf760e41857b7530826a8803c34de2ab077.md",
+          "academic/2c5ec74fb56fbfbceaa4cd5c8312ada4e2e19503.md"
+        ]
+      },
+      {
+        "record_id": "academic_41_0_en",
+        "domain": "academic",
+        "task": "academic_0",
+        "utf8_bytes": 289807,
+        "estimated_tokens": 72453,
+        "source_documents": [
+          "academic/9f25d0d89443cd488bff0b80d15d3201cc51e2ca.md",
+          "academic/52cb05d721688cb766c6e282e9d55c3b8e3dc0cf.md",
+          "academic/3acff13163f51765bb36147f6107967765509d9b.md"
+        ]
+      },
+      {
+        "record_id": "academic_18_0_en",
+        "domain": "academic",
+        "task": "academic_0",
+        "utf8_bytes": 169287,
+        "estimated_tokens": 42323,
+        "source_documents": [
+          "academic/e8a32bdc5729b1c397b023e82836c11e8a33482e.md",
+          "academic/26aa6fe2028b5eefbaa40ab54ef725bbbe7d9810.md",
+          "academic/4d1c856275744c0284312a3a50efb6ca9dc4cd4c.md"
+        ]
+      },
+      {
+        "record_id": "academic_21_0_en",
+        "domain": "academic",
+        "task": "academic_0",
+        "utf8_bytes": 150084,
+        "estimated_tokens": 37521,
+        "source_documents": [
+          "academic/9fad0d0fbdf1957fe3b21731570ff1b47c11663f.md",
+          "academic/d16ab5c19ed33a263b6412ac41a4ea1f068d254a.md",
+          "academic/37e3ebc322895dd9348f080c45600dca737ff60f.md"
+        ]
+      },
+      {
+        "record_id": "academic_OpenBookQA_1_en",
+        "domain": "academic",
+        "task": "academic_1",
+        "utf8_bytes": 186504,
+        "estimated_tokens": 46628,
+        "source_documents": [
+          "academic/QA-GNN Reasoning with Language Models and Knowledge Graphs for Question Answering.md",
+          "academic/Fusing Context Into Knowledge Graph for Commonsense Question Answering.md",
+          "academic/UnifiedQA Crossing Format Boundaries With a Single QA System.md"
+        ]
+      },
+      {
+        "record_id": "academic_BoolQ_1_en",
+        "domain": "academic",
+        "task": "academic_1",
+        "utf8_bytes": 213506,
+        "estimated_tokens": 53377,
+        "source_documents": [
+          "academic/Hierarchical Prompting Taxonomy A Universal Evaluation Framework for Large Language Models Aligned.md",
+          "academic/SHAKTI A 2.5 Billion Parameter Small Language Model Optimized for Edge AI and Low-Resource Environm.md",
+          "academic/Muppet Massive Multi-task Representations with Pre-Finetuning.md"
+        ]
+      },
+      {
+        "record_id": "academic_TimeQuestions_1_en",
+        "domain": "academic",
+        "task": "academic_1",
+        "utf8_bytes": 133183,
+        "estimated_tokens": 33296,
+        "source_documents": [
+          "academic/Complex Temporal Question Answering on Knowledge Graphs.md",
+          "academic/RAG-based Question Answering over Heterogeneous Data and Text.md"
+        ]
+      },
+      {
+        "record_id": "academic_WikiHop_1_en",
+        "domain": "academic",
+        "task": "academic_1",
+        "utf8_bytes": 200673,
+        "estimated_tokens": 50169,
+        "source_documents": [
+          "academic/Longformer The Long-Document Transformer.md",
+          "academic/Coarse-grain Fine-grain Coattention Network for Multi-evidence Question Answering.md",
+          "academic/Exploring Graph-structured Passage Representation for Multi-hop Reading Comprehension with Graph Neu.md"
+        ]
+      },
+      {
+        "record_id": "medical_40121_2021_Article_495_table2_0_en",
+        "domain": "medical",
+        "task": "medical_0",
+        "utf8_bytes": 135302,
+        "estimated_tokens": 33827,
+        "source_documents": [
+          "medical/Localization_of_F-18_FDG_in_Nocardia_lung_infection.md",
+          "medical/PET_imaging_of_cerebral_and_pulmonary_Nocardia_infection.md",
+          "medical/Nocardiosis_as_a_differential_diagnosis_of_a_PET-positive_pu.md",
+          "medical/Solitary_Nocardia_farcinica_brain_abscess_in_an_immunocompet.md",
+          "medical/The_great_imitator__systemic_nocardiosis_mimicking_Richter_s.md"
+        ]
+      },
+      {
+        "record_id": "medical_eb-12-139_table3_20_en",
+        "domain": "medical",
+        "task": "medical_0",
+        "utf8_bytes": 116679,
+        "estimated_tokens": 29172,
+        "source_documents": [
+          "medical/Nivolumab_for_the_treatment_of_malignant_melanoma_in_a_patie.md",
+          "medical/Pembrolizumab-induced_myasthenia_gravis__a_fatal_case_report.md",
+          "medical/Relapsed_myasthenia_gravis_after_nivolumab_treatment.md",
+          "medical/Myasthenia_gravis_induced_by_ipilimumab_in_a_patient_with_me.md",
+          "medical/Lambert-Eaton_Myasthenic_syndrome_caused_by_Nivolumab_in_a_p.md"
+        ]
+      },
+      {
+        "record_id": "medical_antibiotics-14-00365_table1_0_en",
+        "domain": "medical",
+        "task": "medical_0",
+        "utf8_bytes": 138271,
+        "estimated_tokens": 34569,
+        "source_documents": [
+          "medical/Broviac_catheter-related_bacteraemias_due_to_unusual_pathoge.md",
+          "medical/Recurrent_vascular_catheter-related_bacteremia_caused_by_Del.md",
+          "medical/Delftia_acidovorans__Rarely_a_Pathogen__A_Case_Report.md",
+          "medical/Endocarditis_associated_with_Comamonas_acidovorans.md",
+          "medical/Oerskovia_turbata_and_Comamonas_acidovorans_bacteremia_in_a_.md"
+        ]
+      },
+      {
+        "record_id": "medical_40121_2021_Article_495_table2_10_en",
+        "domain": "medical",
+        "task": "medical_0",
+        "utf8_bytes": 74594,
+        "estimated_tokens": 18649,
+        "source_documents": [
+          "medical/Nocardia_veterana__disseminated_infection_with_urinary_tract.md",
+          "medical/Disseminated_Nocardia_infection_mimicking_malignancy_on_FDG_.md",
+          "medical/Multiple_Nocardial_abscesses_of_the_brainstem_and_spinal_cor.md",
+          "medical/Nocardiosis_in_ectopic_ACTH_syndrome__a_case_report_and_revi.md",
+          "medical/The_value_of_molecular_techniques_to_diagnose_Ureaplasma_ure.md"
+        ]
+      }
+    ]
+  },
+  "documents": [
+    {
+      "source_path": "academic/26aa6fe2028b5eefbaa40ab54ef725bbbe7d9810.md",
+      "path": "documents/2cd4e87b46fccc654d54e2a3ca2ad2a516bc50b01b27d2137e3da35a8a5a7ee4.md",
+      "sha256": "2cd4e87b46fccc654d54e2a3ca2ad2a516bc50b01b27d2137e3da35a8a5a7ee4",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 43282,
+      "estimated_tokens": 10821
+    },
+    {
+      "source_path": "academic/2c5ec74fb56fbfbceaa4cd5c8312ada4e2e19503.md",
+      "path": "documents/bf48b217bcca0daa1c0f2e476ab8e15876b4454dbb6dfc9f20c7019fa2f5501d.md",
+      "sha256": "bf48b217bcca0daa1c0f2e476ab8e15876b4454dbb6dfc9f20c7019fa2f5501d",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 52221,
+      "estimated_tokens": 13056
+    },
+    {
+      "source_path": "academic/37e3ebc322895dd9348f080c45600dca737ff60f.md",
+      "path": "documents/02a518547c3ef085c87e5b9e97f68e72fe844737d6d6c8fc142322f1feb77664.md",
+      "sha256": "02a518547c3ef085c87e5b9e97f68e72fe844737d6d6c8fc142322f1feb77664",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 62760,
+      "estimated_tokens": 15690
+    },
+    {
+      "source_path": "academic/3acff13163f51765bb36147f6107967765509d9b.md",
+      "path": "documents/21b4de1559805c868b5ae77dc96c0d4cf11284ef7670a14e23d8466bddf91628.md",
+      "sha256": "21b4de1559805c868b5ae77dc96c0d4cf11284ef7670a14e23d8466bddf91628",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 132824,
+      "estimated_tokens": 33206
+    },
+    {
+      "source_path": "academic/416fcbf760e41857b7530826a8803c34de2ab077.md",
+      "path": "documents/2765a2a2ea636aa0fc124fdfa3350ff72e50ae2ad0d19b66f15a93f8c4a78120.md",
+      "sha256": "2765a2a2ea636aa0fc124fdfa3350ff72e50ae2ad0d19b66f15a93f8c4a78120",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 33508,
+      "estimated_tokens": 8377
+    },
+    {
+      "source_path": "academic/4d1c856275744c0284312a3a50efb6ca9dc4cd4c.md",
+      "path": "documents/c368637270a84f40e38b55168b85b2da805c1c73dc6a1dd2dd02b068732c8ecc.md",
+      "sha256": "c368637270a84f40e38b55168b85b2da805c1c73dc6a1dd2dd02b068732c8ecc",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 33362,
+      "estimated_tokens": 8341
+    },
+    {
+      "source_path": "academic/50a19e337519c014d31f9c005daa37d971a76afd.md",
+      "path": "documents/bd9cf1c29249b0b71af6e3393f0d9f77f95fd34235dd47aac0a4b0f30f86d379.md",
+      "sha256": "bd9cf1c29249b0b71af6e3393f0d9f77f95fd34235dd47aac0a4b0f30f86d379",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 45453,
+      "estimated_tokens": 11364
+    },
+    {
+      "source_path": "academic/52cb05d721688cb766c6e282e9d55c3b8e3dc0cf.md",
+      "path": "documents/1450ffbbfcc41f1c55506bec03b4d03c52871d4a8cda71d8362bf038298df283.md",
+      "sha256": "1450ffbbfcc41f1c55506bec03b4d03c52871d4a8cda71d8362bf038298df283",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 65533,
+      "estimated_tokens": 16384
+    },
+    {
+      "source_path": "academic/9f25d0d89443cd488bff0b80d15d3201cc51e2ca.md",
+      "path": "documents/defd464980ee88cd060ad33d96e42840009df95fba210dac8d0e074078687009.md",
+      "sha256": "defd464980ee88cd060ad33d96e42840009df95fba210dac8d0e074078687009",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 91450,
+      "estimated_tokens": 22863
+    },
+    {
+      "source_path": "academic/9fad0d0fbdf1957fe3b21731570ff1b47c11663f.md",
+      "path": "documents/76d064111e6ae9a50f7e83e9b96d821c4ec73b683feb0a2f48a2f85973d64f66.md",
+      "sha256": "76d064111e6ae9a50f7e83e9b96d821c4ec73b683feb0a2f48a2f85973d64f66",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 34652,
+      "estimated_tokens": 8663
+    },
+    {
+      "source_path": "academic/Coarse-grain Fine-grain Coattention Network for Multi-evidence Question Answering.md",
+      "path": "documents/a6f2b4ae89e272a39177a3602972eb0e7f866cc7e2f751a73be6e8c18fd25ce1.md",
+      "sha256": "a6f2b4ae89e272a39177a3602972eb0e7f866cc7e2f751a73be6e8c18fd25ce1",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 81242,
+      "estimated_tokens": 20311
+    },
+    {
+      "source_path": "academic/Complex Temporal Question Answering on Knowledge Graphs.md",
+      "path": "documents/77a25583b9199fae71065a6c7f29e01f4d4d8c36395494ff057d306ad85ee112.md",
+      "sha256": "77a25583b9199fae71065a6c7f29e01f4d4d8c36395494ff057d306ad85ee112",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 78915,
+      "estimated_tokens": 19729
+    },
+    {
+      "source_path": "academic/Efficient Mirror Detection via Multi-level Heterogeneous Learning.md",
+      "path": "documents/33870b15e99ad8ef3c62fa568430a96a0e034be54e72cd0224712d0ddaa743f0.md",
+      "sha256": "33870b15e99ad8ef3c62fa568430a96a0e034be54e72cd0224712d0ddaa743f0",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 42114,
+      "estimated_tokens": 10529
+    },
+    {
+      "source_path": "academic/Exploring Graph-structured Passage Representation for Multi-hop Reading Comprehension with Graph Neu.md",
+      "path": "documents/e749be87c9137cad31b4c0413e3c59e37c58988af603a6aebc71cf1af6f4fb78.md",
+      "sha256": "e749be87c9137cad31b4c0413e3c59e37c58988af603a6aebc71cf1af6f4fb78",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 43480,
+      "estimated_tokens": 10870
+    },
+    {
+      "source_path": "academic/Fusing Context Into Knowledge Graph for Commonsense Question Answering.md",
+      "path": "documents/e49f2f613b38f7039722b262f8e1f76b6ad663f684dc6b6be08e0f3f594da683.md",
+      "sha256": "e49f2f613b38f7039722b262f8e1f76b6ad663f684dc6b6be08e0f3f594da683",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 25566,
+      "estimated_tokens": 6392
+    },
+    {
+      "source_path": "academic/Hierarchical Prompting Taxonomy A Universal Evaluation Framework for Large Language Models Aligned.md",
+      "path": "documents/0f73c75aaadfdd1fef7afa94d5c4235adad343c28ba90b427be2265f9eb4757f.md",
+      "sha256": "0f73c75aaadfdd1fef7afa94d5c4235adad343c28ba90b427be2265f9eb4757f",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 119064,
+      "estimated_tokens": 29766
+    },
+    {
+      "source_path": "academic/Longformer The Long-Document Transformer.md",
+      "path": "documents/27c69454df541325f94e510c6ec44e1021d78670ed578909de09d9ac50778214.md",
+      "sha256": "27c69454df541325f94e510c6ec44e1021d78670ed578909de09d9ac50778214",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 75951,
+      "estimated_tokens": 18988
+    },
+    {
+      "source_path": "academic/Muppet Massive Multi-task Representations with Pre-Finetuning.md",
+      "path": "documents/41036d9b872460321d9c62a0a0392cc576b806db69879b6a51609fab4d7807eb.md",
+      "sha256": "41036d9b872460321d9c62a0a0392cc576b806db69879b6a51609fab4d7807eb",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 49670,
+      "estimated_tokens": 12418
+    },
+    {
+      "source_path": "academic/QA-GNN Reasoning with Language Models and Knowledge Graphs for Question Answering.md",
+      "path": "documents/cdd7c25833866d1c2a8b653e169e387ced671cfb6bf279ab4fdd9217dfe8fe76.md",
+      "sha256": "cdd7c25833866d1c2a8b653e169e387ced671cfb6bf279ab4fdd9217dfe8fe76",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 71061,
+      "estimated_tokens": 17766
+    },
+    {
+      "source_path": "academic/RAG-based Question Answering over Heterogeneous Data and Text.md",
+      "path": "documents/65f116e4108d3ac78e8b128ff02dfe2516d254b8850a617038efe6aacf1c2549.md",
+      "sha256": "65f116e4108d3ac78e8b128ff02dfe2516d254b8850a617038efe6aacf1c2549",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 54268,
+      "estimated_tokens": 13567
+    },
+    {
+      "source_path": "academic/SAM2-UNet Segment Anything 2 Makes Strong Encoder for Natural and Medical Image Segmentation.md",
+      "path": "documents/4f35ad2644bc5d65bb0fc7c0f271bea56932b4ac7bca0990f3bd57ec07b7c91e.md",
+      "sha256": "4f35ad2644bc5d65bb0fc7c0f271bea56932b4ac7bca0990f3bd57ec07b7c91e",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 35946,
+      "estimated_tokens": 8987
+    },
+    {
+      "source_path": "academic/SHAKTI A 2.5 Billion Parameter Small Language Model Optimized for Edge AI and Low-Resource Environm.md",
+      "path": "documents/77d71d34adb77cdae5349c8957bb92854a79a24121c3da490c410372f7685f4f.md",
+      "sha256": "77d71d34adb77cdae5349c8957bb92854a79a24121c3da490c410372f7685f4f",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 44772,
+      "estimated_tokens": 11193
+    },
+    {
+      "source_path": "academic/UnifiedQA Crossing Format Boundaries With a Single QA System.md",
+      "path": "documents/411b374a99141df9cfd910ce0e5a9c277e8cd8c50fc6c5cfdafeca5b93eae37f.md",
+      "sha256": "411b374a99141df9cfd910ce0e5a9c277e8cd8c50fc6c5cfdafeca5b93eae37f",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 89877,
+      "estimated_tokens": 22470
+    },
+    {
+      "source_path": "academic/d16ab5c19ed33a263b6412ac41a4ea1f068d254a.md",
+      "path": "documents/f72ce0ffe2d5aa469c0ac569d9b53f5365bf1c2f1392534da5f062acbc315450.md",
+      "sha256": "f72ce0ffe2d5aa469c0ac569d9b53f5365bf1c2f1392534da5f062acbc315450",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 52672,
+      "estimated_tokens": 13168
+    },
+    {
+      "source_path": "academic/e8a32bdc5729b1c397b023e82836c11e8a33482e.md",
+      "path": "documents/ad9d1664724bf8fe721d73b0ba6bc76c5ca7b4ae828b8b535780e0390636c26b.md",
+      "sha256": "ad9d1664724bf8fe721d73b0ba6bc76c5ca7b4ae828b8b535780e0390636c26b",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/documents.tar",
+      "utf8_bytes": 92643,
+      "estimated_tokens": 23161
+    },
+    {
+      "source_path": "medical/Broviac_catheter-related_bacteraemias_due_to_unusual_pathoge.md",
+      "path": "documents/0f8223bdb2e95c9e307d8c365c820a9ef435ed432b8ee6680296ee52c043df2b.md",
+      "sha256": "0f8223bdb2e95c9e307d8c365c820a9ef435ed432b8ee6680296ee52c043df2b",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Broviac_catheter-related_bacteraemias_due_to_unusual_pathoge.md",
+      "utf8_bytes": 20396,
+      "estimated_tokens": 5099
+    },
+    {
+      "source_path": "medical/Delftia_acidovorans__Rarely_a_Pathogen__A_Case_Report.md",
+      "path": "documents/37783cf6a965c17b62b1c923a0a20ebae36e1b80ddc3eac37bcc272c0f68151f.md",
+      "sha256": "37783cf6a965c17b62b1c923a0a20ebae36e1b80ddc3eac37bcc272c0f68151f",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Delftia_acidovorans__Rarely_a_Pathogen__A_Case_Report.md",
+      "utf8_bytes": 11465,
+      "estimated_tokens": 2867
+    },
+    {
+      "source_path": "medical/Disseminated_Nocardia_infection_mimicking_malignancy_on_FDG_.md",
+      "path": "documents/60e688669dbf84ab035306a1ea26ab69af3b5c4fcc8a67f38a6c28fd570f2798.md",
+      "sha256": "60e688669dbf84ab035306a1ea26ab69af3b5c4fcc8a67f38a6c28fd570f2798",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Disseminated_Nocardia_infection_mimicking_malignancy_on_FDG_.md",
+      "utf8_bytes": 15048,
+      "estimated_tokens": 3762
+    },
+    {
+      "source_path": "medical/Endocarditis_associated_with_Comamonas_acidovorans.md",
+      "path": "documents/20871eace5ca82baa12c7f09061f6f607149ec1644be969161943324ec63f855.md",
+      "sha256": "20871eace5ca82baa12c7f09061f6f607149ec1644be969161943324ec63f855",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Endocarditis_associated_with_Comamonas_acidovorans.md",
+      "utf8_bytes": 15390,
+      "estimated_tokens": 3848
+    },
+    {
+      "source_path": "medical/Lambert-Eaton_Myasthenic_syndrome_caused_by_Nivolumab_in_a_p.md",
+      "path": "documents/b71e7ebdfe18dabdba613b1cc1003e5000c6ad30d810229623a2384442dc2b05.md",
+      "sha256": "b71e7ebdfe18dabdba613b1cc1003e5000c6ad30d810229623a2384442dc2b05",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Lambert-Eaton_Myasthenic_syndrome_caused_by_Nivolumab_in_a_p.md",
+      "utf8_bytes": 10722,
+      "estimated_tokens": 2681
+    },
+    {
+      "source_path": "medical/Localization_of_F-18_FDG_in_Nocardia_lung_infection.md",
+      "path": "documents/11f85ac83521f4b9fd0d92139f6376f9db5ccb1a6f75fcc924a686b4664af0f3.md",
+      "sha256": "11f85ac83521f4b9fd0d92139f6376f9db5ccb1a6f75fcc924a686b4664af0f3",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Localization_of_F-18_FDG_in_Nocardia_lung_infection.md",
+      "utf8_bytes": 37947,
+      "estimated_tokens": 9487
+    },
+    {
+      "source_path": "medical/Multiple_Nocardial_abscesses_of_the_brainstem_and_spinal_cor.md",
+      "path": "documents/efb175845036ec129bd94f91faad7c0f03bf8dfade0c4cc09357385248ae01b8.md",
+      "sha256": "efb175845036ec129bd94f91faad7c0f03bf8dfade0c4cc09357385248ae01b8",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Multiple_Nocardial_abscesses_of_the_brainstem_and_spinal_cor.md",
+      "utf8_bytes": 11900,
+      "estimated_tokens": 2975
+    },
+    {
+      "source_path": "medical/Myasthenia_gravis_induced_by_ipilimumab_in_a_patient_with_me.md",
+      "path": "documents/fdb24ea4177d2cf327f24e6804f3f5f221a962d606a4fba69c6f1ec4cc1f2a86.md",
+      "sha256": "fdb24ea4177d2cf327f24e6804f3f5f221a962d606a4fba69c6f1ec4cc1f2a86",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Myasthenia_gravis_induced_by_ipilimumab_in_a_patient_with_me.md",
+      "utf8_bytes": 12396,
+      "estimated_tokens": 3099
+    },
+    {
+      "source_path": "medical/Mycoplasma_pneumoniae-associated_Fuchs_syndrome.md",
+      "path": "documents/fabd2f24671dc7526e8313894f0f19795ca12df8297cba159078a9d7ddd0287e.md",
+      "sha256": "fabd2f24671dc7526e8313894f0f19795ca12df8297cba159078a9d7ddd0287e",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Mycoplasma_pneumoniae-associated_Fuchs_syndrome.md",
+      "utf8_bytes": 11800,
+      "estimated_tokens": 2950
+    },
+    {
+      "source_path": "medical/Mycoplasma_pneumoniae-associated_mucositis__a_recently_descr.md",
+      "path": "documents/ac84fad2ff22a2014758b5c55484b3671cdd6bd0caea048223a7e7ed096314a4.md",
+      "sha256": "ac84fad2ff22a2014758b5c55484b3671cdd6bd0caea048223a7e7ed096314a4",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Mycoplasma_pneumoniae-associated_mucositis__a_recently_descr.md",
+      "utf8_bytes": 13189,
+      "estimated_tokens": 3298
+    },
+    {
+      "source_path": "medical/Mycoplasma_pneumoniae-induced_rash_and_mucositis_in_the_prev.md",
+      "path": "documents/3fcd5c994dce94b334449ff61f603215883ba8f460b28795aa08f8f824c48269.md",
+      "sha256": "3fcd5c994dce94b334449ff61f603215883ba8f460b28795aa08f8f824c48269",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Mycoplasma_pneumoniae-induced_rash_and_mucositis_in_the_prev.md",
+      "utf8_bytes": 16770,
+      "estimated_tokens": 4193
+    },
+    {
+      "source_path": "medical/Nivolumab_for_the_treatment_of_malignant_melanoma_in_a_patie.md",
+      "path": "documents/d403bcdf7f397ac735b8272d9781849763ef41e2f01e46d19b0a39cc2d2d1192.md",
+      "sha256": "d403bcdf7f397ac735b8272d9781849763ef41e2f01e46d19b0a39cc2d2d1192",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Nivolumab_for_the_treatment_of_malignant_melanoma_in_a_patie.md",
+      "utf8_bytes": 62745,
+      "estimated_tokens": 15687
+    },
+    {
+      "source_path": "medical/Nocardia_veterana__disseminated_infection_with_urinary_tract.md",
+      "path": "documents/80f370b4d35b0ab5e4fd49078339ed4837cd69db4dd7770d21221bacdb87bfe3.md",
+      "sha256": "80f370b4d35b0ab5e4fd49078339ed4837cd69db4dd7770d21221bacdb87bfe3",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Nocardia_veterana__disseminated_infection_with_urinary_tract.md",
+      "utf8_bytes": 14007,
+      "estimated_tokens": 3502
+    },
+    {
+      "source_path": "medical/Nocardiosis_as_a_differential_diagnosis_of_a_PET-positive_pu.md",
+      "path": "documents/11f85ac83521f4b9fd0d92139f6376f9db5ccb1a6f75fcc924a686b4664af0f3.md",
+      "sha256": "11f85ac83521f4b9fd0d92139f6376f9db5ccb1a6f75fcc924a686b4664af0f3",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Nocardiosis_as_a_differential_diagnosis_of_a_PET-positive_pu.md",
+      "utf8_bytes": 37947,
+      "estimated_tokens": 9487
+    },
+    {
+      "source_path": "medical/Nocardiosis_in_ectopic_ACTH_syndrome__a_case_report_and_revi.md",
+      "path": "documents/9f97187a1c023b7d1ae7ab469261652d9061ae3f6a9d420295499e7c0b00a0a2.md",
+      "sha256": "9f97187a1c023b7d1ae7ab469261652d9061ae3f6a9d420295499e7c0b00a0a2",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Nocardiosis_in_ectopic_ACTH_syndrome__a_case_report_and_revi.md",
+      "utf8_bytes": 19552,
+      "estimated_tokens": 4888
+    },
+    {
+      "source_path": "medical/Oerskovia_turbata_and_Comamonas_acidovorans_bacteremia_in_a_.md",
+      "path": "documents/dfc1dc4c9ed41eb0d993f54a2728b69c0e2edea19ba0c37a1933813ebcfdb01c.md",
+      "sha256": "dfc1dc4c9ed41eb0d993f54a2728b69c0e2edea19ba0c37a1933813ebcfdb01c",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Oerskovia_turbata_and_Comamonas_acidovorans_bacteremia_in_a_.md",
+      "utf8_bytes": 46016,
+      "estimated_tokens": 11504
+    },
+    {
+      "source_path": "medical/PET_imaging_of_cerebral_and_pulmonary_Nocardia_infection.md",
+      "path": "documents/82753030535d099ded4765d857eee653dd6f1fc2460cc679af5ee2effb8bd791.md",
+      "sha256": "82753030535d099ded4765d857eee653dd6f1fc2460cc679af5ee2effb8bd791",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/PET_imaging_of_cerebral_and_pulmonary_Nocardia_infection.md",
+      "utf8_bytes": 21815,
+      "estimated_tokens": 5454
+    },
+    {
+      "source_path": "medical/Pembrolizumab-induced_myasthenia_gravis__a_fatal_case_report.md",
+      "path": "documents/8ab0356adc094cd1d9159963ef1895b312e92b881c407e9d5bbc4590f5f9346f.md",
+      "sha256": "8ab0356adc094cd1d9159963ef1895b312e92b881c407e9d5bbc4590f5f9346f",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Pembrolizumab-induced_myasthenia_gravis__a_fatal_case_report.md",
+      "utf8_bytes": 10223,
+      "estimated_tokens": 2556
+    },
+    {
+      "source_path": "medical/Recurrent_vascular_catheter-related_bacteremia_caused_by_Del.md",
+      "path": "documents/f5a35342f77f4e5bea465ed9b2201883f19ba5b322efcc07191accf9203f5946.md",
+      "sha256": "f5a35342f77f4e5bea465ed9b2201883f19ba5b322efcc07191accf9203f5946",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Recurrent_vascular_catheter-related_bacteremia_caused_by_Del.md",
+      "utf8_bytes": 45004,
+      "estimated_tokens": 11251
+    },
+    {
+      "source_path": "medical/Relapsed_myasthenia_gravis_after_nivolumab_treatment.md",
+      "path": "documents/9ceb980cba9515876feb63201e2fdf95aae5c49fd508964241e811ab46f04f49.md",
+      "sha256": "9ceb980cba9515876feb63201e2fdf95aae5c49fd508964241e811ab46f04f49",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Relapsed_myasthenia_gravis_after_nivolumab_treatment.md",
+      "utf8_bytes": 20593,
+      "estimated_tokens": 5149
+    },
+    {
+      "source_path": "medical/Solitary_Nocardia_farcinica_brain_abscess_in_an_immunocompet.md",
+      "path": "documents/1a567fadcc34259d4ea05beb4cbe90685410753c2f6a0c67d927f7b0a603855f.md",
+      "sha256": "1a567fadcc34259d4ea05beb4cbe90685410753c2f6a0c67d927f7b0a603855f",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/Solitary_Nocardia_farcinica_brain_abscess_in_an_immunocompet.md",
+      "utf8_bytes": 30207,
+      "estimated_tokens": 7552
+    },
+    {
+      "source_path": "medical/The_great_imitator__systemic_nocardiosis_mimicking_Richter_s.md",
+      "path": "documents/29083b3a4bc606470a4838834e7bbdb4def433c69f5271d985824f2e96ef14d0.md",
+      "sha256": "29083b3a4bc606470a4838834e7bbdb4def433c69f5271d985824f2e96ef14d0",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/The_great_imitator__systemic_nocardiosis_mimicking_Richter_s.md",
+      "utf8_bytes": 7386,
+      "estimated_tokens": 1847
+    },
+    {
+      "source_path": "medical/The_value_of_molecular_techniques_to_diagnose_Ureaplasma_ure.md",
+      "path": "documents/f9df60c2033afb3c21fdfeaaaf2d26940149e958c36d6519b2c3a5519864c60b.md",
+      "sha256": "f9df60c2033afb3c21fdfeaaaf2d26940149e958c36d6519b2c3a5519864c60b",
+      "source_url": "https://huggingface.co/datasets/tianyumyum/AOE/resolve/9ff4acb5478180b5edd5397c9209af8c81389333/medical/The_value_of_molecular_techniques_to_diagnose_Ureaplasma_ure.md",
+      "utf8_bytes": 14087,
+      "estimated_tokens": 3522
+    }
+  ],
+  "overlap": {
+    "source_paths": [],
+    "content": []
+  },
+  "source_availability": {
+    "records_by_domain": {
+      "academic": 74,
+      "financial": 224,
+      "legal": 75,
+      "medical": 74
+    },
+    "eligible_by_task": {
+      "academic_0": 36,
+      "academic_1": 30,
+      "medical_0": 73
+    }
+  },
+  "statistics": {
+    "all": {
+      "instances": 14,
+      "document_references": 48,
+      "unique_source_paths": 48,
+      "unique_documents": 47,
+      "input_utf8_bytes": {
+        "min": 41759,
+        "mean": 147063.643,
+        "median": 136786.5,
+        "max": 289807,
+        "total": 2058891
+      },
+      "input_estimated_tokens": {
+        "min": 10441,
+        "mean": 36767,
+        "median": 34198.0,
+        "max": 72453,
+        "total": 514738
+      },
+      "document_utf8_bytes": {
+        "min": 7386,
+        "mean": 42893.562,
+        "median": 37947.0,
+        "max": 132824,
+        "total": 2058891
+      },
+      "document_estimated_tokens": {
+        "min": 1847,
+        "mean": 10723.708,
+        "median": 9487.0,
+        "max": 33206,
+        "total": 514738
+      },
+      "gold_rows": 45,
+      "gold_cells": 320,
+      "missing_cells": 11,
+      "blank_cells": 11,
+      "null_cells": 0,
+      "literal_n_a_cells": 2
+    },
+    "pilot": {
+      "instances": 2,
+      "document_references": 5,
+      "unique_source_paths": 5,
+      "unique_documents": 5,
+      "input_utf8_bytes": {
+        "min": 41759,
+        "mean": 59909.5,
+        "median": 59909.5,
+        "max": 78060,
+        "total": 119819
+      },
+      "input_estimated_tokens": {
+        "min": 10441,
+        "mean": 14978.5,
+        "median": 14978.5,
+        "max": 19516,
+        "total": 29957
+      },
+      "document_utf8_bytes": {
+        "min": 11800,
+        "mean": 23963.8,
+        "median": 16770,
+        "max": 42114,
+        "total": 119819
+      },
+      "document_estimated_tokens": {
+        "min": 2950,
+        "mean": 5991.4,
+        "median": 4193,
+        "max": 10529,
+        "total": 29957
+      },
+      "gold_rows": 5,
+      "gold_cells": 35,
+      "missing_cells": 2,
+      "blank_cells": 2,
+      "null_cells": 0,
+      "literal_n_a_cells": 0
+    },
+    "test": {
+      "instances": 12,
+      "document_references": 43,
+      "unique_source_paths": 43,
+      "unique_documents": 42,
+      "input_utf8_bytes": {
+        "min": 74594,
+        "mean": 161589.333,
+        "median": 144177.5,
+        "max": 289807,
+        "total": 1939072
+      },
+      "input_estimated_tokens": {
+        "min": 18649,
+        "mean": 40398.417,
+        "median": 36045.0,
+        "max": 72453,
+        "total": 484781
+      },
+      "document_utf8_bytes": {
+        "min": 7386,
+        "mean": 45094.698,
+        "median": 43282,
+        "max": 132824,
+        "total": 1939072
+      },
+      "document_estimated_tokens": {
+        "min": 1847,
+        "mean": 11273.977,
+        "median": 10821,
+        "max": 33206,
+        "total": 484781
+      },
+      "gold_rows": 40,
+      "gold_cells": 285,
+      "missing_cells": 9,
+      "blank_cells": 9,
+      "null_cells": 0,
+      "literal_n_a_cells": 2
+    },
+    "by_task": {
+      "academic_0": {
+        "all": {
+          "instances": 4,
+          "document_references": 12,
+          "unique_source_paths": 12,
+          "unique_documents": 12,
+          "input_utf8_bytes": {
+            "min": 131182,
+            "mean": 185090,
+            "median": 159685.5,
+            "max": 289807,
+            "total": 740360
+          },
+          "input_estimated_tokens": {
+            "min": 32797,
+            "mean": 46273.5,
+            "median": 39922.0,
+            "max": 72453,
+            "total": 185094
+          },
+          "document_utf8_bytes": {
+            "min": 33362,
+            "mean": 61696.667,
+            "median": 52446.5,
+            "max": 132824,
+            "total": 740360
+          },
+          "document_estimated_tokens": {
+            "min": 8341,
+            "mean": 15424.5,
+            "median": 13112.0,
+            "max": 33206,
+            "total": 185094
+          },
+          "gold_rows": 9,
+          "gold_cells": 36,
+          "missing_cells": 0,
+          "blank_cells": 0,
+          "null_cells": 0,
+          "literal_n_a_cells": 0
+        },
+        "pilot": {
+          "instances": 0,
+          "document_references": 0,
+          "unique_source_paths": 0,
+          "unique_documents": 0,
+          "input_utf8_bytes": {
+            "min": null,
+            "mean": null,
+            "median": null,
+            "max": null,
+            "total": 0
+          },
+          "input_estimated_tokens": {
+            "min": null,
+            "mean": null,
+            "median": null,
+            "max": null,
+            "total": 0
+          },
+          "document_utf8_bytes": {
+            "min": null,
+            "mean": null,
+            "median": null,
+            "max": null,
+            "total": 0
+          },
+          "document_estimated_tokens": {
+            "min": null,
+            "mean": null,
+            "median": null,
+            "max": null,
+            "total": 0
+          },
+          "gold_rows": 0,
+          "gold_cells": 0,
+          "missing_cells": 0,
+          "blank_cells": 0,
+          "null_cells": 0,
+          "literal_n_a_cells": 0
+        },
+        "test": {
+          "instances": 4,
+          "document_references": 12,
+          "unique_source_paths": 12,
+          "unique_documents": 12,
+          "input_utf8_bytes": {
+            "min": 131182,
+            "mean": 185090,
+            "median": 159685.5,
+            "max": 289807,
+            "total": 740360
+          },
+          "input_estimated_tokens": {
+            "min": 32797,
+            "mean": 46273.5,
+            "median": 39922.0,
+            "max": 72453,
+            "total": 185094
+          },
+          "document_utf8_bytes": {
+            "min": 33362,
+            "mean": 61696.667,
+            "median": 52446.5,
+            "max": 132824,
+            "total": 740360
+          },
+          "document_estimated_tokens": {
+            "min": 8341,
+            "mean": 15424.5,
+            "median": 13112.0,
+            "max": 33206,
+            "total": 185094
+          },
+          "gold_rows": 9,
+          "gold_cells": 36,
+          "missing_cells": 0,
+          "blank_cells": 0,
+          "null_cells": 0,
+          "literal_n_a_cells": 0
+        }
+      },
+      "academic_1": {
+        "all": {
+          "instances": 5,
+          "document_references": 13,
+          "unique_source_paths": 13,
+          "unique_documents": 13,
+          "input_utf8_bytes": {
+            "min": 78060,
+            "mean": 162385.2,
+            "median": 186504,
+            "max": 213506,
+            "total": 811926
+          },
+          "input_estimated_tokens": {
+            "min": 19516,
+            "mean": 40597.2,
+            "median": 46628,
+            "max": 53377,
+            "total": 202986
+          },
+          "document_utf8_bytes": {
+            "min": 25566,
+            "mean": 62455.846,
+            "median": 54268,
+            "max": 119064,
+            "total": 811926
+          },
+          "document_estimated_tokens": {
+            "min": 6392,
+            "mean": 15614.308,
+            "median": 13567,
+            "max": 29766,
+            "total": 202986
+          },
+          "gold_rows": 13,
+          "gold_cells": 52,
+          "missing_cells": 10,
+          "blank_cells": 10,
+          "null_cells": 0,
+          "literal_n_a_cells": 0
+        },
+        "pilot": {
+          "instances": 1,
+          "document_references": 2,
+          "unique_source_paths": 2,
+          "unique_documents": 2,
+          "input_utf8_bytes": {
+            "min": 78060,
+            "mean": 78060,
+            "median": 78060,
+            "max": 78060,
+            "total": 78060
+          },
+          "input_estimated_tokens": {
+            "min": 19516,
+            "mean": 19516,
+            "median": 19516,
+            "max": 19516,
+            "total": 19516
+          },
+          "document_utf8_bytes": {
+            "min": 35946,
+            "mean": 39030,
+            "median": 39030.0,
+            "max": 42114,
+            "total": 78060
+          },
+          "document_estimated_tokens": {
+            "min": 8987,
+            "mean": 9758,
+            "median": 9758.0,
+            "max": 10529,
+            "total": 19516
+          },
+          "gold_rows": 2,
+          "gold_cells": 8,
+          "missing_cells": 2,
+          "blank_cells": 2,
+          "null_cells": 0,
+          "literal_n_a_cells": 0
+        },
+        "test": {
+          "instances": 4,
+          "document_references": 11,
+          "unique_source_paths": 11,
+          "unique_documents": 11,
+          "input_utf8_bytes": {
+            "min": 133183,
+            "mean": 183466.5,
+            "median": 193588.5,
+            "max": 213506,
+            "total": 733866
+          },
+          "input_estimated_tokens": {
+            "min": 33296,
+            "mean": 45867.5,
+            "median": 48398.5,
+            "max": 53377,
+            "total": 183470
+          },
+          "document_utf8_bytes": {
+            "min": 25566,
+            "mean": 66715.091,
+            "median": 71061,
+            "max": 119064,
+            "total": 733866
+          },
+          "document_estimated_tokens": {
+            "min": 6392,
+            "mean": 16679.091,
+            "median": 17766,
+            "max": 29766,
+            "total": 183470
+          },
+          "gold_rows": 11,
+          "gold_cells": 44,
+          "missing_cells": 8,
+          "blank_cells": 8,
+          "null_cells": 0,
+          "literal_n_a_cells": 0
+        }
+      },
+      "medical_0": {
+        "all": {
+          "instances": 5,
+          "document_references": 23,
+          "unique_source_paths": 23,
+          "unique_documents": 22,
+          "input_utf8_bytes": {
+            "min": 41759,
+            "mean": 101321,
+            "median": 116679,
+            "max": 138271,
+            "total": 506605
+          },
+          "input_estimated_tokens": {
+            "min": 10441,
+            "mean": 25331.6,
+            "median": 29172,
+            "max": 34569,
+            "total": 126658
+          },
+          "document_utf8_bytes": {
+            "min": 7386,
+            "mean": 22026.304,
+            "median": 15390,
+            "max": 62745,
+            "total": 506605
+          },
+          "document_estimated_tokens": {
+            "min": 1847,
+            "mean": 5506.87,
+            "median": 3848,
+            "max": 15687,
+            "total": 126658
+          },
+          "gold_rows": 23,
+          "gold_cells": 232,
+          "missing_cells": 1,
+          "blank_cells": 1,
+          "null_cells": 0,
+          "literal_n_a_cells": 2
+        },
+        "pilot": {
+          "instances": 1,
+          "document_references": 3,
+          "unique_source_paths": 3,
+          "unique_documents": 3,
+          "input_utf8_bytes": {
+            "min": 41759,
+            "mean": 41759,
+            "median": 41759,
+            "max": 41759,
+            "total": 41759
+          },
+          "input_estimated_tokens": {
+            "min": 10441,
+            "mean": 10441,
+            "median": 10441,
+            "max": 10441,
+            "total": 10441
+          },
+          "document_utf8_bytes": {
+            "min": 11800,
+            "mean": 13919.667,
+            "median": 13189,
+            "max": 16770,
+            "total": 41759
+          },
+          "document_estimated_tokens": {
+            "min": 2950,
+            "mean": 3480.333,
+            "median": 3298,
+            "max": 4193,
+            "total": 10441
+          },
+          "gold_rows": 3,
+          "gold_cells": 27,
+          "missing_cells": 0,
+          "blank_cells": 0,
+          "null_cells": 0,
+          "literal_n_a_cells": 0
+        },
+        "test": {
+          "instances": 4,
+          "document_references": 20,
+          "unique_source_paths": 20,
+          "unique_documents": 19,
+          "input_utf8_bytes": {
+            "min": 74594,
+            "mean": 116211.5,
+            "median": 125990.5,
+            "max": 138271,
+            "total": 464846
+          },
+          "input_estimated_tokens": {
+            "min": 18649,
+            "mean": 29054.25,
+            "median": 31499.5,
+            "max": 34569,
+            "total": 116217
+          },
+          "document_utf8_bytes": {
+            "min": 7386,
+            "mean": 23242.3,
+            "median": 17471.0,
+            "max": 62745,
+            "total": 464846
+          },
+          "document_estimated_tokens": {
+            "min": 1847,
+            "mean": 5810.85,
+            "median": 4368.0,
+            "max": 15687,
+            "total": 116217
+          },
+          "gold_rows": 20,
+          "gold_cells": 205,
+          "missing_cells": 1,
+          "blank_cells": 1,
+          "null_cells": 0,
+          "literal_n_a_cells": 2
+        }
+      }
+    }
+  },
+  "excluded": {
+    "above_financial_short_limit": {
+      "count": 19,
+      "ids": [
+        "financial_34_4_en",
+        "financial_34_5_en",
+        "financial_34_6_en",
+        "financial_66_0_en",
+        "financial_66_1_en",
+        "financial_66_2_en",
+        "financial_66_3_en",
+        "financial_67_0_en",
+        "financial_67_1_en",
+        "financial_67_2_en",
+        "financial_67_3_en",
+        "financial_68_0_en",
+        "financial_68_1_en",
+        "financial_68_2_en",
+        "financial_68_3_en",
+        "financial_69_0_en",
+        "financial_69_1_en",
+        "financial_69_2_en",
+        "financial_69_3_en"
+      ]
+    },
+    "above_token_threshold": {
+      "count": 28,
+      "ids": [
+        "academic_0_0_en",
+        "academic_10_0_en",
+        "academic_12_0_en",
+        "academic_17_0_en",
+        "academic_26_0_en",
+        "academic_37_0_en",
+        "academic_3_0_en",
+        "academic_7_0_en",
+        "financial_34_4_en",
+        "financial_34_5_en",
+        "financial_34_6_en",
+        "financial_66_0_en",
+        "financial_66_1_en",
+        "financial_66_2_en",
+        "financial_66_3_en",
+        "financial_67_0_en",
+        "financial_67_1_en",
+        "financial_67_2_en",
+        "financial_67_3_en",
+        "financial_68_0_en",
+        "financial_68_1_en",
+        "financial_68_2_en",
+        "financial_68_3_en",
+        "financial_69_0_en",
+        "financial_69_1_en",
+        "financial_69_2_en",
+        "financial_69_3_en",
+        "medical_main_table1_5_en"
+      ]
+    },
+    "domain_out_of_scope": {
+      "count": 75,
+      "ids": [
+        "legal_0_0_zh",
+        "legal_0_1_zh",
+        "legal_10_0_zh",
+        "legal_10_1_zh",
+        "legal_11_0_zh",
+        "legal_11_1_zh",
+        "legal_12_0_zh",
+        "legal_12_1_zh",
+        "legal_13_0_zh",
+        "legal_13_1_zh",
+        "legal_14_0_zh",
+        "legal_14_1_zh",
+        "legal_15_0_zh",
+        "legal_15_1_zh",
+        "legal_16_0_zh",
+        "legal_16_1_zh",
+        "legal_17_0_zh",
+        "legal_17_1_zh",
+        "legal_18_0_zh",
+        "legal_18_1_zh",
+        "legal_19_0_zh",
+        "legal_19_1_zh",
+        "legal_1_0_zh",
+        "legal_1_1_zh",
+        "legal_20_0_zh",
+        "legal_20_1_zh",
+        "legal_21_0_zh",
+        "legal_21_1_zh",
+        "legal_22_0_zh",
+        "legal_22_1_zh",
+        "legal_23_0_zh",
+        "legal_23_1_zh",
+        "legal_24_0_zh",
+        "legal_24_1_zh",
+        "legal_25_0_zh",
+        "legal_25_1_zh",
+        "legal_26_0_zh",
+        "legal_26_1_zh",
+        "legal_27_0_zh",
+        "legal_27_1_zh",
+        "legal_28_0_zh",
+        "legal_28_1_zh",
+        "legal_29_0_zh",
+        "legal_29_1_zh",
+        "legal_2_0_zh",
+        "legal_2_1_zh",
+        "legal_30_0_zh",
+        "legal_31_0_zh",
+        "legal_32_0_zh",
+        "legal_33_0_zh",
+        "legal_34_0_zh",
+        "legal_35_0_zh",
+        "legal_36_0_zh",
+        "legal_37_0_zh",
+        "legal_38_0_zh",
+        "legal_39_0_zh",
+        "legal_3_0_zh",
+        "legal_3_1_zh",
+        "legal_40_0_zh",
+        "legal_41_0_zh",
+        "legal_42_0_zh",
+        "legal_43_0_zh",
+        "legal_44_0_zh",
+        "legal_4_0_zh",
+        "legal_4_1_zh",
+        "legal_5_0_zh",
+        "legal_5_1_zh",
+        "legal_6_0_zh",
+        "legal_6_1_zh",
+        "legal_7_0_zh",
+        "legal_7_1_zh",
+        "legal_8_0_zh",
+        "legal_8_1_zh",
+        "legal_9_0_zh",
+        "legal_9_1_zh"
+      ]
+    },
+    "eligible_not_selected": {
+      "count": 125,
+      "ids": [
+        "academic_11_0_en",
+        "academic_13_0_en",
+        "academic_14_0_en",
+        "academic_15_0_en",
+        "academic_16_0_en",
+        "academic_19_0_en",
+        "academic_1_0_en",
+        "academic_20NEWS_1_en",
+        "academic_20_0_en",
+        "academic_22_0_en",
+        "academic_23_0_en",
+        "academic_24_0_en",
+        "academic_25_0_en",
+        "academic_27_0_en",
+        "academic_28_0_en",
+        "academic_29_0_en",
+        "academic_2_0_en",
+        "academic_30_0_en",
+        "academic_31_0_en",
+        "academic_33_0_en",
+        "academic_34_0_en",
+        "academic_35_0_en",
+        "academic_36_0_en",
+        "academic_38_0_en",
+        "academic_39_0_en",
+        "academic_40_0_en",
+        "academic_42_0_en",
+        "academic_43_0_en",
+        "academic_4_0_en",
+        "academic_5_0_en",
+        "academic_6_0_en",
+        "academic_8_0_en",
+        "academic_9_0_en",
+        "academic_AG_News_1_en",
+        "academic_CIFAR-10_1_en",
+        "academic_COLLAB_1_en",
+        "academic_CUB_1_en",
+        "academic_ComplexWebQuestions_1_en",
+        "academic_CronQuestions_1_en",
+        "academic_MNIST_1_en",
+        "academic_MR_1_en",
+        "academic_MS_COCO_1_en",
+        "academic_MultiRC_1_en",
+        "academic_MultiTQ_1_en",
+        "academic_N-CARS_1_en",
+        "academic_NewsQA_1_en",
+        "academic_OK-VQA_1_en",
+        "academic_PIQA_1_en",
+        "academic_PROTEINS_1_en",
+        "academic_PubMedQA_1_en",
+        "academic_STL-10_1_en",
+        "academic_SearchQA_1_en",
+        "academic_StoryCloze_1_en",
+        "academic_TriviaQA_1_en",
+        "academic_WikiQA_1_en",
+        "academic_WikiText-103_1_en",
+        "academic_WikiText-2_1_en",
+        "medical_12105_2019_Article_1059_table_0_en",
+        "medical_12887_2025_Article_6248_table_0_en",
+        "medical_1349-7235-65-4-0562_table2_0_en",
+        "medical_1349-7235-65-4-0562_table2_5_en",
+        "medical_40121_2021_Article_495_table2_15_en",
+        "medical_40121_2021_Article_495_table2_5_en",
+        "medical_CASE20150_table1_0_en",
+        "medical_CASE20150_table1_5_en",
+        "medical_CASE24769_table_0_en",
+        "medical_CASE24769_table_10_en",
+        "medical_CASE24769_table_5_en",
+        "medical_WJG-26-6182_table_0_en",
+        "medical_WJG-26-6182_table_10_en",
+        "medical_WJG-26-6182_table_15_en",
+        "medical_WJG-26-6182_table_5_en",
+        "medical_cancers-14-05451_tableA1_0_en",
+        "medical_cancers-14-05451_tableA1_5_en",
+        "medical_cureus-0013-00000013268_table1_0_en",
+        "medical_curroncol-30-00109_table_0_en",
+        "medical_curroncol-30-00109_table_10_en",
+        "medical_curroncol-30-00109_table_15_en",
+        "medical_curroncol-30-00109_table_20_en",
+        "medical_curroncol-30-00109_table_5_en",
+        "medical_diagnostics-13-00015_table6_0_en",
+        "medical_eb-12-139_table1_0_en",
+        "medical_eb-12-139_table1_10_en",
+        "medical_eb-12-139_table1_5_en",
+        "medical_eb-12-139_table2_0_en",
+        "medical_eb-12-139_table2_5_en",
+        "medical_eb-12-139_table3_0_en",
+        "medical_eb-12-139_table3_10_en",
+        "medical_eb-12-139_table3_15_en",
+        "medical_eb-12-139_table3_25_en",
+        "medical_eb-12-139_table3_30_en",
+        "medical_eb-12-139_table3_5_en",
+        "medical_eb-12-139_table4_0_en",
+        "medical_eb-12-139_table4_5_en",
+        "medical_eb-12-139_table5_0_en",
+        "medical_eb-12-139_table6_0_en",
+        "medical_fimmu-12-663986_table1_0_en",
+        "medical_fimmu-12-800879_table_0_en",
+        "medical_fimmu-12-800879_table_5_en",
+        "medical_fimmu-15-1439033_table_0_en",
+        "medical_fimmu-15-1439033_table_10_en",
+        "medical_fimmu-15-1439033_table_15_en",
+        "medical_fimmu-15-1439033_table_5_en",
+        "medical_fimmu-16-1593770_table1_0_en",
+        "medical_fimmu-17-1806045_table1_0_en",
+        "medical_fmed-12-1607970_table_0_en",
+        "medical_fsurg-10-1081326_table1_0_en",
+        "medical_idr-16-1865_table1_0_en",
+        "medical_idr-16-1865_table1_10_en",
+        "medical_idr-16-1865_table1_5_en",
+        "medical_luaf133_hirata_table3_0_en",
+        "medical_luaf133_hirata_table3_5_en",
+        "medical_main_1_table1_0_en",
+        "medical_main_table1_0_en",
+        "medical_main_table1_10_en",
+        "medical_main_table1_15_en",
+        "medical_medi-103-e41098_table_0_en",
+        "medical_medi-103-e41098_table_5_en",
+        "medical_medi-104-e43468_table_0_en",
+        "medical_ms9-86-2352_table1_0_en",
+        "medical_ofad391_table1_0_en",
+        "medical_vetsci-13-00165_animal_0_en",
+        "medical_vetsci-13-00165_human_0_en",
+        "medical_vetsci-13-00165_human_10_en",
+        "medical_vetsci-13-00165_human_5_en"
+      ]
+    },
+    "gold_columns_mismatch": {
+      "count": 12,
+      "ids": [
+        "financial_66_1_en",
+        "financial_66_2_en",
+        "financial_66_3_en",
+        "financial_67_1_en",
+        "financial_67_2_en",
+        "financial_67_3_en",
+        "financial_68_1_en",
+        "financial_68_2_en",
+        "financial_68_3_en",
+        "financial_69_1_en",
+        "financial_69_2_en",
+        "financial_69_3_en"
+      ]
+    },
+    "language_out_of_scope": {
+      "count": 205,
+      "ids": [
+        "financial_10_4_zh",
+        "financial_10_5_zh",
+        "financial_10_6_zh",
+        "financial_11_0_zh",
+        "financial_11_1_zh",
+        "financial_11_2_zh",
+        "financial_11_3_zh",
+        "financial_12_0_zh",
+        "financial_12_1_zh",
+        "financial_12_2_zh",
+        "financial_12_3_zh",
+        "financial_13_0_zh",
+        "financial_13_1_zh",
+        "financial_13_2_zh",
+        "financial_13_3_zh",
+        "financial_14_0_zh",
+        "financial_14_1_zh",
+        "financial_14_2_zh",
+        "financial_14_3_zh",
+        "financial_15_0_zh",
+        "financial_15_1_zh",
+        "financial_15_2_zh",
+        "financial_15_3_zh",
+        "financial_16_0_zh",
+        "financial_16_1_zh",
+        "financial_16_2_zh",
+        "financial_16_3_zh",
+        "financial_17_0_zh",
+        "financial_17_1_zh",
+        "financial_17_2_zh",
+        "financial_17_3_zh",
+        "financial_18_0_zh",
+        "financial_18_1_zh",
+        "financial_18_2_zh",
+        "financial_18_3_zh",
+        "financial_19_0_zh",
+        "financial_19_1_zh",
+        "financial_19_2_zh",
+        "financial_19_3_zh",
+        "financial_1_0_zh",
+        "financial_1_1_zh",
+        "financial_1_2_zh",
+        "financial_1_3_zh",
+        "financial_20_0_zh",
+        "financial_20_1_zh",
+        "financial_20_2_zh",
+        "financial_20_3_zh",
+        "financial_21_0_zh",
+        "financial_21_1_zh",
+        "financial_21_2_zh",
+        "financial_21_3_zh",
+        "financial_22_0_zh",
+        "financial_22_1_zh",
+        "financial_22_2_zh",
+        "financial_22_3_zh",
+        "financial_23_0_zh",
+        "financial_23_1_zh",
+        "financial_23_2_zh",
+        "financial_23_3_zh",
+        "financial_24_0_zh",
+        "financial_24_1_zh",
+        "financial_24_2_zh",
+        "financial_24_3_zh",
+        "financial_25_0_zh",
+        "financial_25_1_zh",
+        "financial_25_2_zh",
+        "financial_25_3_zh",
+        "financial_2_0_zh",
+        "financial_2_1_zh",
+        "financial_2_2_zh",
+        "financial_2_3_zh",
+        "financial_31_4_zh",
+        "financial_31_5_zh",
+        "financial_31_6_zh",
+        "financial_32_4_zh",
+        "financial_32_5_zh",
+        "financial_32_6_zh",
+        "financial_33_4_zh",
+        "financial_33_5_zh",
+        "financial_33_6_zh",
+        "financial_34_4_zh",
+        "financial_34_5_zh",
+        "financial_34_6_zh",
+        "financial_35_4_zh",
+        "financial_35_5_zh",
+        "financial_35_6_zh",
+        "financial_36_4_zh",
+        "financial_36_5_zh",
+        "financial_36_6_zh",
+        "financial_3_0_zh",
+        "financial_3_1_zh",
+        "financial_3_2_zh",
+        "financial_3_3_zh",
+        "financial_4_0_zh",
+        "financial_4_1_zh",
+        "financial_4_2_zh",
+        "financial_4_3_zh",
+        "financial_51_0_zh",
+        "financial_51_1_zh",
+        "financial_51_2_zh",
+        "financial_51_3_zh",
+        "financial_52_0_zh",
+        "financial_52_1_zh",
+        "financial_52_2_zh",
+        "financial_52_3_zh",
+        "financial_53_0_zh",
+        "financial_53_1_zh",
+        "financial_53_2_zh",
+        "financial_53_3_zh",
+        "financial_54_0_zh",
+        "financial_54_1_zh",
+        "financial_54_2_zh",
+        "financial_54_3_zh",
+        "financial_55_0_zh",
+        "financial_55_1_zh",
+        "financial_55_2_zh",
+        "financial_55_3_zh",
+        "financial_56_4_zh",
+        "financial_56_5_zh",
+        "financial_56_6_zh",
+        "financial_57_4_zh",
+        "financial_57_5_zh",
+        "financial_57_6_zh",
+        "financial_58_4_zh",
+        "financial_58_5_zh",
+        "financial_58_6_zh",
+        "financial_59_4_zh",
+        "financial_59_5_zh",
+        "financial_59_6_zh",
+        "financial_5_0_zh",
+        "financial_5_1_zh",
+        "financial_5_2_zh",
+        "financial_5_3_zh",
+        "financial_61_0_zh",
+        "financial_61_1_zh",
+        "financial_61_2_zh",
+        "financial_61_3_zh",
+        "financial_62_0_zh",
+        "financial_62_1_zh",
+        "financial_62_2_zh",
+        "financial_62_3_zh",
+        "financial_63_0_zh",
+        "financial_63_1_zh",
+        "financial_63_2_zh",
+        "financial_63_3_zh",
+        "financial_64_0_zh",
+        "financial_64_1_zh",
+        "financial_64_2_zh",
+        "financial_64_3_zh",
+        "financial_65_0_zh",
+        "financial_65_1_zh",
+        "financial_65_2_zh",
+        "financial_65_3_zh",
+        "financial_66_0_zh",
+        "financial_66_1_zh",
+        "financial_66_2_zh",
+        "financial_66_3_zh",
+        "financial_67_0_zh",
+        "financial_67_1_zh",
+        "financial_67_2_zh",
+        "financial_67_3_zh",
+        "financial_68_0_zh",
+        "financial_68_1_zh",
+        "financial_68_2_zh",
+        "financial_68_3_zh",
+        "financial_69_0_zh",
+        "financial_69_1_zh",
+        "financial_69_2_zh",
+        "financial_69_3_zh",
+        "financial_6_4_zh",
+        "financial_6_5_zh",
+        "financial_6_6_zh",
+        "financial_70_0_zh",
+        "financial_70_1_zh",
+        "financial_70_2_zh",
+        "financial_70_3_zh",
+        "financial_71_0_zh",
+        "financial_71_1_zh",
+        "financial_71_2_zh",
+        "financial_71_3_zh",
+        "financial_72_0_zh",
+        "financial_72_1_zh",
+        "financial_72_2_zh",
+        "financial_72_3_zh",
+        "financial_73_0_zh",
+        "financial_73_1_zh",
+        "financial_73_2_zh",
+        "financial_73_3_zh",
+        "financial_74_0_zh",
+        "financial_74_1_zh",
+        "financial_74_2_zh",
+        "financial_74_3_zh",
+        "financial_75_0_zh",
+        "financial_75_1_zh",
+        "financial_75_2_zh",
+        "financial_75_3_zh",
+        "financial_7_4_zh",
+        "financial_7_5_zh",
+        "financial_7_6_zh",
+        "financial_8_4_zh",
+        "financial_8_5_zh",
+        "financial_8_6_zh",
+        "financial_9_4_zh",
+        "financial_9_5_zh",
+        "financial_9_6_zh"
+      ]
+    }
+  }
+}
