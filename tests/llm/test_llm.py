@@ -286,3 +286,254 @@ def test_cli_rejects_live_test_split_and_whole_pilot(tmp_path, monkeypatch, caps
         assert error.value.code == 2
         assert "pilot" in capsys.readouterr().err
     assert not list(tmp_path.iterdir())
+
+
+DEEPREAD_CLI = ["--method", "deepread", "--dataset", "docred", "--instance", "docred-dev-0244"]
+TOOLS = [
+    {"type": "function", "function": {"name": name, "parameters": {"type": "object"}}}
+    for name in ("bm25_search", "read_section")
+]
+
+
+def completion(message, finish="stop", usage=None):
+    return {
+        "id": "mock-deepread",
+        "object": "chat.completion",
+        "created": 0,
+        "model": llm.DEFAULT_GEMINI_MODEL,
+        "choices": [{"index": 0, "message": {"role": "assistant", **message}, "finish_reason": finish}],
+        "usage": usage,
+    }
+
+
+def structured_call(identifier, name, arguments, **extra):
+    return {
+        "id": identifier,
+        "type": "function",
+        "function": {"name": name, "arguments": json.dumps(arguments)},
+        **extra,
+    }
+
+
+@pytest.fixture
+def gemini_turns(monkeypatch):
+    requests, replies = [], []
+
+    def transport(request):
+        assert request.url.host == "generativelanguage.googleapis.com"
+        assert request.url.path == "/v1beta/openai/chat/completions"
+        requests.append(json.loads(request.content))
+        assert replies, "Unexpected request after the scripted provider replies"
+        code, payload = replies.pop(0)
+        return Response(code, json=payload)
+
+    def sdk(**options):
+        assert options["max_retries"] == 0 and options["api_key"] == MOCK_KEY
+        return OpenAI(**options, http_client=Client(transport=MockTransport(transport)))
+
+    monkeypatch.setattr(llm, "OpenAI", sdk)
+    return requests, replies
+
+
+def test_chat_preserves_extensions_parallel_ids_and_immutable_request_snapshots(gemini_turns):
+    requests, replies = gemini_turns
+    signature = {"google": {"thought_signature": "opaque-tool-signature"}}
+    message_extra = {"google": {"thought_signature": "opaque-message-signature"}}
+    calls = [
+        structured_call("bm25-1", "bm25_search", {"query": "Alpha"}, extra_content=signature),
+        structured_call("read-2", "read_section", {"doc_id": "2", "node_id": "1"}),
+    ]
+    usage = {
+        "prompt_tokens": 12, "completion_tokens": 3, "total_tokens": 18,
+        "prompt_tokens_details": {"cached_tokens": 1},
+        "completion_tokens_details": {"reasoning_tokens": 3},
+    }
+    replies.extend([
+        (200, completion({"content": None, "tool_calls": calls, "extra_content": message_extra}, "tool_calls", usage)),
+        (200, completion({"content": '{"rows":[]}'}, usage=usage)),
+    ])
+    client = llm.LLM(provider="gemini", model=llm.DEFAULT_GEMINI_MODEL, api_key=MOCK_KEY)
+    history = [{"role": "system", "content": "Local documents only."}, {"role": "user", "content": "Find evidence."}]
+    first = client.chat(history, TOOLS)
+    assert first["choices"][0]["message"]["tool_calls"] == calls
+    # Emulate a caller that rebuilds the assistant message and loses provider extensions.
+    history.append({
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [{key: value for key, value in call.items() if key != "extra_content"} for call in calls],
+    })
+    history.extend({"role": "tool", "tool_call_id": call["id"], "content": '{"ok":true}'} for call in calls)
+    assert client.chat(history, TOOLS)["choices"][0]["message"]["content"] == '{"rows":[]}'
+    assert len(requests) == 2
+    forwarded = requests[1]["messages"][2]
+    assert forwarded["tool_calls"] == calls and forwarded["extra_content"] == message_extra
+    assert [item["tool_call_id"] for item in requests[1]["messages"][3:]] == ["bm25-1", "read-2"]
+    assert requests[1]["tools"] == TOOLS and requests[1]["tool_choice"] == "auto"
+    assert not {"include_reasoning", "temperature", "parallel_tool_calls"} & requests[1].keys()
+    history[0]["content"] = "Changed later"
+    history[2]["tool_calls"][0]["function"]["arguments"] = "Changed later"
+    assert client.calls[0]["messages"] == requests[0]["messages"]
+    assert client.calls[1]["request"] == requests[1]
+    assert client.calls[0]["response_message"]["tool_calls"][0]["extra_content"] == signature
+    assert llm.aggregate_usage(client.calls) == {
+        "input_tokens": 24, "output_tokens": 6, "total_tokens": 36, "cached_tokens": 2, "reasoning_tokens": 6,
+    }
+    assert MOCK_KEY not in json.dumps(client.calls)
+
+
+def test_cumulative_budget_covers_full_requests_and_prevents_second_attempt(gemini_turns):
+    requests, replies = gemini_turns
+    messages = [{"role": "system", "content": "Requirements."}, {"role": "user", "content": "DocRED task."}]
+    payload = {"model": llm.DEFAULT_GEMINI_MODEL, "messages": messages, "max_tokens": 4096,
+               "tools": TOOLS, "tool_choice": "auto"}
+    exact = len(json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+    limit = (exact + 3) // 4
+    replies.append((200, completion({"content": "First answer."})))
+    client = llm.LLM(
+        provider="gemini", model=llm.DEFAULT_GEMINI_MODEL, api_key=MOCK_KEY, max_total_input_tokens=limit,
+    )
+    assert client.chat(messages, TOOLS)
+    assert client.calls[0]["input_utf8_bytes"] == exact
+    assert client.chat(messages, TOOLS) is None
+    assert client.calls[1]["status"] == "total_input_budget_exceeded"
+    assert client.calls[1]["cumulative_estimated_input_tokens"] == limit
+    assert client.calls[1]["api_attempts"] == 0 and len(requests) == 1
+    assert llm.aggregate_usage(client.calls) is None
+
+
+def test_agent_request_limit_rejects_schema_and_message_bytes_before_sending():
+    messages = [{"role": "user", "content": "X"}]
+    client = llm.LLM(provider="gemini", model=llm.DEFAULT_GEMINI_MODEL, api_key=MOCK_KEY, max_input_tokens=10)
+    assert llm.measure_input(messages)[1] < 10
+    assert client.chat(messages, TOOLS) is None
+    call = client.calls[0]
+    assert call["status"] == "input_too_large" and call["estimated_input_tokens"] > 10
+    assert call["api_attempts"] == client.accepted_input_tokens == 0
+
+
+@pytest.mark.parametrize(
+    ("http_status", "reply", "status", "raw"),
+    [
+        (429, {"error": {"message": "Project quota exhausted", "status": "RESOURCE_EXHAUSTED"}},
+         "provider_error", None),
+        (200, completion({"content": '{"relations":['}, "length"), "incomplete", '{"relations":['),
+        (200, completion({"content": None, "refusal": "Fixture refusal"}, "content_filter"), "refused", None),
+        (200, completion({"content": None, "tool_calls": [
+            structured_call("allowed", "bm25_search", {"query": "should not be dispatched"}),
+            structured_call("blocked", "semantic_retrieval", {"query": "must not run"}),
+        ]}, "tool_calls"), "unexpected_tool", None),
+    ],
+)
+def test_terminal_agent_failures_stop_before_another_request(
+    tmp_path, monkeypatch, gemini_turns, http_status, reply, status, raw,
+):
+    requests, replies = gemini_turns
+    replies.append((http_status, reply))
+    monkeypatch.setattr(benchmark, "live_settings", lambda *args: (llm.DEFAULT_GEMINI_MODEL, MOCK_KEY))
+    monkeypatch.setattr(benchmark, "RESULTS", tmp_path)
+    assert benchmark.main([*DEEPREAD_CLI, "--live"]) == 1
+    run = json.loads(next(tmp_path.glob("*.jsonl")).read_bytes())
+    assert run["status"] == status and run["raw_response"] == raw and run["prediction"] is None
+    assert len(requests) == run["api_attempts"] == run["llm_calls"] == 1
+    assert run["method_trace"]["termination_reason"] == status
+    assert all(event["event"] != "tool_call" for event in run["method_trace"]["events"])
+    if http_status == 429:
+        assert run["error"]["http_status"] == 429
+
+
+def test_total_usage_keeps_missing_contributions_unknown():
+    present = dict(input_tokens=17, output_tokens=3, total_tokens=20, cached_tokens=None, reasoning_tokens=0)
+    incomplete = dict(input_tokens=23, output_tokens=None, total_tokens=31, cached_tokens=5, reasoning_tokens=4)
+    calls = [{"api_attempts": 1, "usage": value} for value in [present, incomplete]]
+    calls.append({"api_attempts": 0, "usage": None})
+    assert llm.aggregate_usage(calls) == {
+        "input_tokens": 40, "output_tokens": None, "total_tokens": 51, "cached_tokens": None, "reasoning_tokens": 4,
+    }
+    calls.append({"api_attempts": 1, "usage": None})
+    assert all(value is None for value in llm.aggregate_usage(calls).values())
+
+
+def test_cli_rejects_deepread_openai_before_loading_credentials(monkeypatch, capsys):
+    def forbidden(*args):
+        pytest.fail("An unsupported combination must be rejected before credentials are loaded.")
+
+    monkeypatch.setattr(benchmark, "live_settings", forbidden)
+    with pytest.raises(SystemExit) as error:
+        benchmark.main([*DEEPREAD_CLI, "--provider", "openai", "--live"])
+    assert error.value.code == 2
+    assert "Select --provider gemini" in capsys.readouterr().err
+
+
+def test_original_agent_round_trip_through_mocked_gemini(tmp_path, monkeypatch, gemini_turns):
+    requests, replies = gemini_turns
+    metadata = {"google": {"thought_signature": "signed-bm25-turn"}}
+    read_metadata = {"google": {"thought_signature": "signed-read-turn"}}
+    first_tool = structured_call(
+        "lookup", "bm25_search", {"query": "Charles", "scope": "doc", "doc_id": "1"},
+        extra_content=metadata,
+    )
+    second_tool = structured_call(
+        "read", "read_section", {"doc_id": "1", "node_id": "1", "start_paragraph": 0, "end_paragraph": 2},
+        extra_content=read_metadata,
+    )
+    usage = {"prompt_tokens": 20, "completion_tokens": 4, "total_tokens": 24}
+    replies.extend([
+        (200, completion({"content": None, "tool_calls": [first_tool], "extra_content": metadata}, "tool_calls", usage)),
+        (200, completion({"content": None, "tool_calls": [second_tool]}, "tool_calls", usage)),
+        (200, completion({"content": ' {"relations":[]} '}, usage=usage)),
+    ])
+    monkeypatch.setattr(benchmark, "live_settings", lambda *args: (llm.DEFAULT_GEMINI_MODEL, MOCK_KEY))
+    monkeypatch.setattr(benchmark, "RESULTS", tmp_path)
+    assert benchmark.main([*DEEPREAD_CLI, "--live"]) == 0
+    run = json.loads(next(tmp_path.glob("*.jsonl")).read_bytes())
+    assert run["status"] == "success" and run["prediction"] == {"relations": []}
+    assert run["raw_response"] == ' {"relations":[]} '
+    assert len(requests) == run["llm_calls"] == run["api_attempts"] == 3
+    assert run["usage"]["input_tokens"] == 60 and run["usage"]["total_tokens"] == 72
+    assert requests[1]["messages"][2]["extra_content"] == metadata
+    assert requests[1]["messages"][2]["tool_calls"] == [first_tool]
+    assert requests[2]["messages"][4]["tool_calls"] == [second_tool]
+    assert [msg["tool_call_id"] for msg in requests[2]["messages"] if msg["role"] == "tool"] == ["lookup", "read"]
+    for request in requests[1:]:
+        assert json.loads(request["messages"][-1]["content"])["ok"]
+
+
+def test_original_agent_recovers_from_an_invalid_aoe_node_id(tmp_path, monkeypatch, gemini_turns):
+    requests, replies = gemini_turns
+    for node_id, call_id in [("6,7,8", "invalid-read"), ("6", "corrected-read")]:
+        call = structured_call(call_id, "read_section", {
+            "doc_id": "2", "node_id": node_id, "start_paragraph": 0, "end_paragraph": 1,
+        })
+        replies.append((200, completion({"content": None, "tool_calls": [call]}, "tool_calls")))
+    raw = '```json\n{"rows":[]}\n```'
+    replies.append((200, completion({"content": raw})))
+    monkeypatch.setattr(benchmark, "live_settings", lambda *args: (llm.DEFAULT_GEMINI_MODEL, MOCK_KEY))
+    monkeypatch.setattr(benchmark, "RESULTS", tmp_path)
+
+    assert benchmark.main([
+        "--method", "deepread", "--dataset", "aoe", "--instance", "academic_PMD_1_en", "--live",
+    ]) == 0
+    run = json.loads(next(tmp_path.glob("*.jsonl")).read_bytes())
+    assert run["status"] == "success"
+    assert run["prediction"] == {"rows": []} and run["raw_response"] == raw
+    assert len(requests) == run["llm_calls"] == 3
+    assert run["prompt_version"].startswith("deepread-bm25-v2/")
+    assert "Pass exactly one doc_id and one node_id" in requests[0]["messages"][0]["content"]
+
+    invalid = requests[1]["messages"][-1]
+    assert invalid["tool_call_id"] == "invalid-read"
+    error = json.loads(invalid["content"])
+    assert error["ok"] is False
+    assert error["ref"]["node_id"] == "6,7,8"
+    assert error["error"] == "node_id '6,7,8' not found in doc '2'"
+    assert {"6", "7", "8"} <= set(error["valid_node_ids"])
+    assert "6,7,8" not in error["valid_node_ids"]
+    assert "separate structured tool call for each node" in error["hint"]
+
+    corrected = requests[2]["messages"][-1]
+    assert corrected["tool_call_id"] == "corrected-read"
+    section = json.loads(corrected["content"])
+    assert section["ok"] is True
+    assert section["ref"] == {"doc_id": "2", "node_id": "6", "paragraph_indexes": [0]}
+    assert section["paragraphs"]
+    assert "hint" not in section

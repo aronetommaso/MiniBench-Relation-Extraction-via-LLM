@@ -123,6 +123,40 @@ If 3.1 is unavailable for your project, rerun the command with `--model gemini-3
 
 The default limits are 120,000 estimated input tokens and 4,096 output tokens. Before sending a live request, the runner prints the model, rendered UTF-8 size, input estimate, and output limit. It estimates input tokens using `ceil(UTF-8 bytes / 4)` over the roles and content of every rendered message. The estimate includes instructions, schema, and documents, and can differ from the provider's tokenizer count. Oversized prompts are preserved in the local trace and rejected before an API attempt. The client sends the complete prompt with SDK retries disabled. Actual usage and the local estimate appear in separate fields. Gemini uses the provider's sampling defaults. The OpenAI Responses path sends temperature zero for the supported configurations listed in the client. [Responses API](https://developers.openai.com/api/reference/python/resources/responses/methods/create)
 
+## Milestone 3 — DeepRead-BM25
+
+DeepRead uses the original `run_agent()`, `build_system_prompt()`, `DocIndex`, `parse_markdown_to_corpus()`, `bm25_search()`, and `read_section()` at commit `25360c9f109cdcd29785bbef7e6a36963b50b374`. It starts from a directory of nodes and reads evidence through local tools. VCL sends the full source context in a single call. Both methods use the same inference allowlist, task contracts, and output validation. The shared prompt is now `structured-extraction-en-v2`. It describes DocRED relation fields without a concrete example triple. The earlier VCL v1 runs remain useful as technical smoke tests. Use v2 for comparisons. [Pinned DeepRead source](https://github.com/Zhanli-Li/DeepRead/tree/25360c9f109cdcd29785bbef7e6a36963b50b374) · [DeepRead paper](https://arxiv.org/abs/2602.05014)
+
+The two tools exposed to Gemini are `bm25_search` with at most two hits and `read_section` with an inclusive start and exclusive end. DeepRead uses `(doc_id, node_id)` coordinates and keeps paragraph order. DocRED has one node with one numbered sentence per paragraph. AOE retains original Markdown titles, section hierarchy, tables, and source filenames under ordered document IDs. The original parser normalizes heading levels and paragraph boundaries. Its image branch ordinarily keeps the alternative text and loses surrounding inline text. The adapter instead preserves recognized image lines as literal text, including captions and links, without fetching images. The BM25 configuration disables neighbor expansion and uses lexical retrieval in place of the embedding and reranking setup from the paper.
+
+The shared client sends DeepRead messages and function schemas through Gemini Chat Completions with the model's sampling defaults. It preserves tool IDs, parallel call order, and Gemini thought signatures from the provider's response. DeepRead supports Gemini in this milestone. VCL also supports OpenAI Responses. Input estimates use UTF-8 bytes divided by four and rounded up. For DeepRead this covers the complete serialized payload in every round, including prior messages, tool arguments and results, and tool schemas. Defaults are 120,000 per-request input tokens, 250,000 cumulative input tokens, 4,096 output tokens per round, and 10 rounds. Budget violations and terminal provider errors stop the loop. Requests use zero automatic retries. Provider usage stays separate from estimates and missing usage stays unknown. [Gemini function calling compatibility](https://aistudio.google.com/docs/openai#function-calling) · [Thought signatures](https://aistudio.google.com/docs/thought-signatures?generate-content=true)
+
+The JSONL contains immutable request snapshots, per-call usage, the aggregate instance fields, and `method_trace` with the directory, source map, upstream events, tool results, and termination reason. It records both the method revision and the benchmark Git revision, plus whether the working tree is dirty. In the offline DocRED example, directory node `(1, 1)` is **Charles Quef** with six paragraphs. Round 1 finds paragraphs 0 and 1 via BM25. Round 2 reads both with ReadSection. Round 3 returns the simulated JSON. In AOE, the two documents have 17 and 12 nodes. The simulator searches each document in round 1 and reads within both in round 2. All seven pilot instances complete in three simulated rounds with zero API attempts. These traces verify the execution path. Their placeholder predictions are for testing.
+
+DeepRead's `deepread-bm25-v2` prompt asks for one document ID and one node ID per ReadSection call. After a lookup error, the adapter returns the original error with the exact valid node IDs for that document, or the valid document IDs if the document is unknown. The shared output parser accepts plain JSON or a single Markdown code block containing JSON. It keeps the original response in `raw_response` and applies the same JSON and schema checks to both formats.
+
+### Offline verification
+
+From the project root, run the tests and the complete pilot splits. NumPy and Requests are direct dependencies of the DeepRead modules and are pinned in `requirements.txt`. DeepRead uses its local whitespace token-count fallback for the directory.
+
+~~~powershell
+& .\.venv\Scripts\python.exe -m pip check
+& .\.venv\Scripts\python.exe -m pytest tests/ -q
+& .\.venv\Scripts\python.exe .\benchmark.py --method deepread --dataset docred --split pilot --dry-run
+& .\.venv\Scripts\python.exe .\benchmark.py --method deepread --dataset aoe --split pilot --dry-run
+~~~
+
+For a representative dry run, replace `--split pilot` with `--instance docred-dev-0244` or `--instance academic_PMD_1_en`, respectively.
+
+### Manual Gemini smoke tests
+
+Use `GEMINI_KEY` from the existing environment or `.env`. Each live run requires a single explicit pilot ID. To check the shorter input first, run DocRED before AOE.
+
+~~~powershell
+& .\.venv\Scripts\python.exe .\benchmark.py --method deepread --dataset docred --instance docred-dev-0244 --provider gemini --model gemini-3.1-flash-lite --max-rounds 10 --live
+& .\.venv\Scripts\python.exe .\benchmark.py --method deepread --dataset aoe --instance academic_PMD_1_en --provider gemini --model gemini-3.1-flash-lite --max-rounds 10 --live
+~~~
+
 ## Method repositories inspected
 
 DeepRead publishes an official Markdown entry point and BM25 retrieval. MemAgent publishes a quickstart and its original RL checkpoints. Using a shared LLM later will reproduce the MemAgent workflow with that backbone. Reproducing the original RL experiment requires the original checkpoints. [DeepRead](https://github.com/Zhanli-Li/DeepRead) · [MemAgent](https://github.com/BytedTsinghua-SIA/MemAgent)

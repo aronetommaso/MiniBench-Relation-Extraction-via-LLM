@@ -3,3 +3,5 @@ openai==3.59.0
 spacy==3.8.18
 python-dotenv==1.2.1
 pytest==9.0.1
+numpy==2.4.6
+requests==2.34.2

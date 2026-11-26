@@ -1,5 +1,7 @@
 """Render extraction messages and record simulated or live API calls."""
 
+from copy import deepcopy
+import json
 import os
 from pathlib import Path
 import re
@@ -12,11 +14,15 @@ from openai import APIError, OpenAI
 DEFAULT_MAX_INPUT_TOKENS = 120_000
 DEFAULT_MAX_OUTPUT_TOKENS = 4_096
 DEFAULT_GEMINI_MODEL = "gemini-3.1-flash-lite"
+DEFAULT_MAX_ROUNDS = 10
+DEFAULT_MAX_TOTAL_INPUT_TOKENS = 250_000
 API_URLS = {
     "gemini": "https://generativelanguage.googleapis.com/v1beta/openai/",
     "openai": "https://api.openai.com/v1",
 }
 INPUT_ESTIMATOR = "ceil(UTF-8 bytes of all rendered message roles and content / 4)"
+CHAT_INPUT_ESTIMATOR = "ceil(UTF-8 bytes of the complete serialized request payload / 4)"
+USAGE_FIELDS = ("input_tokens", "output_tokens", "total_tokens", "cached_tokens", "reasoning_tokens")
 
 
 def live_settings(env_path: Path, model_override=None, provider="openai"):
@@ -80,43 +86,66 @@ def _usage(response):
     }
 
 
-def _gemini_result(response, call):
-    usage = getattr(response, "usage", None)
+def aggregate_usage(calls):
+    """Aggregate reported usage while keeping any missing contribution unknown."""
+    reports = [call.get("usage") for call in calls if call["api_attempts"]]
+    if not any(report is not None for report in reports):
+        return None
+    totals = {}
+    for field in USAGE_FIELDS:
+        values = [report.get(field) if report else None for report in reports]
+        totals[field] = sum(values) if all(value is not None for value in values) else None
+    return totals
+
+
+def _gemini_result(response, call, tools_enabled=False):
+    usage = response.get("usage")
     call.update(
-        reported_model=getattr(response, "model", None),
-        response_id=getattr(response, "id", None),
-        usage=None if usage is None else {
-            "input_tokens": usage.prompt_tokens,
-            "output_tokens": usage.completion_tokens,
-            "total_tokens": usage.total_tokens,
-            "cached_tokens": getattr(getattr(usage, "prompt_tokens_details", None), "cached_tokens", None),
-            "reasoning_tokens": getattr(getattr(usage, "completion_tokens_details", None), "reasoning_tokens", None),
+        reported_model=response.get("model"),
+        response_id=response.get("id"),
+        usage=None if not isinstance(usage, dict) else {
+            "input_tokens": usage.get("prompt_tokens"),
+            "output_tokens": usage.get("completion_tokens"),
+            "total_tokens": usage.get("total_tokens"),
+            "cached_tokens": (usage.get("prompt_tokens_details") or {}).get("cached_tokens"),
+            "reasoning_tokens": (usage.get("completion_tokens_details") or {}).get("reasoning_tokens"),
         },
     )
-    if not response.choices:
+    choices = response.get("choices")
+    if not isinstance(choices, list) or not choices or not isinstance(choices[0], dict):
         call.update(status="provider_error", error={"message": "Gemini returned no completion choices."})
         return None
 
-    choice = response.choices[0]
-    finish_reason = choice.finish_reason
-    message = getattr(choice, "message", None)
-    refusal = getattr(message, "refusal", None)
+    choice = choices[0]
+    finish_reason = choice.get("finish_reason")
     call["response_status"] = finish_reason
+    message = choice.get("message")
+    if message is None and finish_reason in {"content_filter", "length"}:
+        message = {}
+    if not isinstance(message, dict) or (
+        message.get("content") is not None and not isinstance(message["content"], str)
+    ):
+        call.update(status="provider_error", error={"message": "Gemini returned an invalid assistant message."})
+        return None
+    refusal = message.get("refusal")
     if refusal or finish_reason == "content_filter":
         call.update(status="refused", error={"reason": finish_reason, "refusals": [refusal] if refusal else []})
     elif finish_reason == "length":
         call.update(status="incomplete", error={"reason": "max_output_tokens"})
+    elif tools_enabled and message.get("tool_calls") and finish_reason in {"tool_calls", "stop", None}:
+        call["status"] = "tool_calls"
     elif finish_reason == "stop":
         call["status"] = "completed"
     else:
         call.update(status="provider_error", error={"reason": finish_reason})
-    return getattr(message, "content", None)
+    return message.get("content")
 
 
 class LLM:
     def __init__(
         self, *, model=None, api_key=None, simulated_response=None, provider="openai",
         max_input_tokens=DEFAULT_MAX_INPUT_TOKENS, max_output_tokens=DEFAULT_MAX_OUTPUT_TOKENS,
+        max_rounds=DEFAULT_MAX_ROUNDS, max_total_input_tokens=DEFAULT_MAX_TOTAL_INPUT_TOKENS,
     ):
         self.model = model
         self.provider = provider
@@ -124,7 +153,12 @@ class LLM:
         self.simulated_response = simulated_response
         self.max_input_tokens = max_input_tokens
         self.max_output_tokens = max_output_tokens
+        self.max_rounds = max_rounds
+        self.max_total_input_tokens = max_total_input_tokens
+        self.accepted_input_tokens = 0
         self.calls = []
+        self.method_trace = {}
+        self._assistant_history = {}
 
     def _safe_error(self, message):
         if message is None:
@@ -134,9 +168,7 @@ class LLM:
             message = message.replace(self._api_key, "[redacted]")
         return re.sub(r"\b(?:sk-|AIza)[^\s\"',;]+", "[redacted]", message)
 
-    def invoke(self, prompt, state):
-        messages = render_messages(prompt, state)
-        byte_count, estimate = measure_input(messages)
+    def _record_call(self, messages, byte_count, estimate):
         call = {
             "messages": messages,
             "input_utf8_bytes": byte_count,
@@ -155,6 +187,104 @@ class LLM:
             "sampling_settings": {},
         }
         self.calls.append(call)
+        return call
+
+    def _request(self, call, payload):
+        print(
+            f"Live {self.provider} request for {self.model} | {call['input_utf8_bytes']:,} rendered UTF-8 bytes | "
+            f"{call['estimated_input_tokens']:,} estimated input tokens (limit {self.max_input_tokens:,}) | "
+            f"maximum output {self.max_output_tokens:,} tokens",
+            flush=True,
+        )
+        with OpenAI(api_key=self._api_key, base_url=API_URLS[self.provider], max_retries=0) as client:
+            started = perf_counter()
+            call["api_attempts"] = 1
+            try:
+                if self.provider == "gemini":
+                    response = client.chat.completions.with_raw_response.create(**payload)
+                    body = response.http_response.json()
+                    if not isinstance(body, dict):
+                        raise ValueError("Expected a JSON object from Gemini.")
+                    return body
+                return client.responses.create(**payload)
+            except APIError as error:
+                call["status"] = "provider_error"
+                call["error"] = {
+                    "type": type(error).__name__,
+                    "message": self._safe_error(error.message),
+                    "code": self._safe_error(getattr(error, "code", None)),
+                    "http_status": getattr(error, "status_code", None),
+                    "request_id": self._safe_error(getattr(error, "request_id", None)),
+                }
+                return None
+            except ValueError as error:
+                call.update(status="provider_error", error={"message": self._safe_error(error)})
+                return None
+            finally:
+                call["latency_seconds"] = perf_counter() - started
+
+    def _restore_assistant_history(self, messages):
+        for index, message in enumerate(messages):
+            original = self._assistant_history.get(index)
+            if message.get("role") != "assistant" or not original:
+                continue
+            if "extra_content" in original:
+                message["extra_content"] = deepcopy(original["extra_content"])
+            by_id = {tool.get("id"): tool for tool in original.get("tool_calls") or []}
+            for position, tool in enumerate(message.get("tool_calls") or []):
+                if tool.get("id") in by_id:
+                    message["tool_calls"][position] = deepcopy(by_id[tool["id"]])
+
+    def chat(self, messages, tools=None, *, simulate=None):
+        """Send a bounded Gemini turn and return the original Chat Completions envelope."""
+        if self.provider != "gemini":
+            raise ValueError("Agentic chat is supported only for Gemini.")
+        if self.simulated_response is not None and simulate is None:
+            raise ValueError("A simulated chat requires scripted responses.")
+        sent = deepcopy(messages)
+        self._restore_assistant_history(sent)
+        payload = {"model": self.model, "messages": sent, "max_tokens": self.max_output_tokens}
+        if tools is not None:
+            payload.update(tools=deepcopy(tools), tool_choice="auto")
+        byte_count = len(json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+        estimate = (byte_count + 3) // 4
+        call = self._record_call(sent, byte_count, estimate)
+        proposed_total = self.accepted_input_tokens + estimate
+        call.update(
+            round=len(self.calls), request=payload, max_total_input_tokens=self.max_total_input_tokens,
+            cumulative_estimated_input_tokens=self.accepted_input_tokens,
+        )
+        if call["round"] > self.max_rounds:
+            call.update(status="max_rounds_reached", error={"message": "The maximum number of rounds was reached."})
+        elif call["would_exceed_input_limit"]:
+            call.update(status="input_too_large", error={
+                "message": f"Estimated input of {estimate:,} exceeds the {self.max_input_tokens:,}-token request limit."
+            })
+        elif proposed_total > self.max_total_input_tokens:
+            call.update(status="total_input_budget_exceeded", error={
+                "message": f"Estimated cumulative input of {proposed_total:,} exceeds the "
+                           f"{self.max_total_input_tokens:,}-token limit."
+            })
+        else:
+            self.accepted_input_tokens = proposed_total
+            call.update(input_accepted=True, cumulative_estimated_input_tokens=proposed_total,
+                        simulated=simulate is not None)
+            response = simulate(sent) if simulate is not None else self._request(call, payload)
+            if response is None:
+                return None
+            call["raw_response"] = _gemini_result(response, call, tools_enabled=tools is not None)
+            choices = response.get("choices") or []
+            if isinstance(choices, list) and choices and isinstance(choices[0], dict):
+                call["response_message"] = deepcopy(choices[0].get("message"))
+            if call["status"] in {"completed", "tool_calls"}:
+                self._assistant_history[len(sent)] = deepcopy(call["response_message"])
+                return response
+        return None
+
+    def invoke(self, prompt, state):
+        messages = render_messages(prompt, state)
+        byte_count, estimate = measure_input(messages)
+        call = self._record_call(messages, byte_count, estimate)
         if self.simulated_response is not None:
             call["status"] = "dry_run"
             return self.simulated_response
@@ -166,47 +296,18 @@ class LLM:
             }
             return None
 
-        print(
-            f"Live {self.provider} request for {self.model} | {byte_count:,} rendered UTF-8 bytes | "
-            f"{estimate:,} estimated input tokens (limit {self.max_input_tokens:,}) | "
-            f"maximum output {self.max_output_tokens:,} tokens",
-            flush=True,
-        )
-        gemini = self.provider == "gemini"
-        sampling = {} if gemini else _sampling_settings(self.model)
-        call["sampling_settings"] = sampling
-        with OpenAI(api_key=self._api_key, base_url=API_URLS[self.provider], max_retries=0) as client:
-            started = perf_counter()
-            call["api_attempts"] = 1
-            try:
-                if gemini:
-                    response = client.chat.completions.create(
-                        model=self.model, messages=messages, max_tokens=self.max_output_tokens,
-                    )
-                else:
-                    response = client.responses.create(
-                        model=self.model,
-                        input=messages,
-                        max_output_tokens=self.max_output_tokens,
-                        truncation="disabled",
-                        store=False,
-                        **sampling,
-                    )
-            except APIError as error:
-                call["status"] = "provider_error"
-                call["error"] = {
-                    "type": type(error).__name__,
-                    "message": self._safe_error(error.message),
-                    "code": self._safe_error(getattr(error, "code", None)),
-                    "http_status": getattr(error, "status_code", None),
-                    "request_id": self._safe_error(getattr(error, "request_id", None)),
-                }
-                return None
-            finally:
-                call["latency_seconds"] = perf_counter() - started
+        if self.provider == "gemini":
+            response = self._request(call, {"model": self.model, "messages": messages, "max_tokens": self.max_output_tokens})
+            return _gemini_result(response, call) if response is not None else None
 
-        if gemini:
-            return _gemini_result(response, call)
+        sampling = _sampling_settings(self.model)
+        call["sampling_settings"] = sampling
+        response = self._request(call, {
+            "model": self.model, "input": messages, "max_output_tokens": self.max_output_tokens,
+            "truncation": "disabled", "store": False, **sampling,
+        })
+        if response is None:
+            return None
 
         call.update(
             reported_model=response.model,
