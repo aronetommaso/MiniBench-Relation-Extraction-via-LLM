@@ -4,4 +4,6 @@ __pycache__/
 /data/raw/
 /data/.build-*/
 /AGENTS.md
+/results/
+/.pytest_cache/
 

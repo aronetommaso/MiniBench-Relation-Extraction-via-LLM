@@ -7,7 +7,6 @@ Milestone 1 builds two datasets for inspecting extraction errors on individual e
 Run these commands from the repository root.
 
 ~~~sh
-python -m pip install -r requirements.txt
 python build_dataset.py --dataset all --seed 42
 python build_dataset.py --dataset all --validate-only
 ~~~
@@ -89,6 +88,40 @@ The DocRED sample contains 753 entity clusters, 1,056 mentions, 373 relations, a
 AOE contains 48 source paths and 47 distinct Markdown contents, with zero shared document contents between pilot and test. There are 45 rows, 320 cells, 11 blank cells, zero null cells, and 2 literal `N/A` values. Of the 19 English Financial records, all exceed the default cap and 12 also have gold column names that disagree with the released schema. The exclusions are recorded by reason in the manifest, with individual records allowed to have multiple reasons.
 
 The default build was validated from the local cache. Two builds at seed 42 produced identical SHA-256 hashes for all 54 processed files. Checks with custom sample sizes passed. An insufficient AOE threshold, a missing generated Markdown document, and a missing cached source each produced the expected diagnostic.
+
+## Milestone 2 — VCL FullDocument extraction
+
+The FullDocument baseline calls VCL's original `estrai_semantico(context, query, llm, language)` from the `parallelization` submodule at commit `6b8539edaf55e621f6e551c58e32a065a28da4cf`. The adapter loads the operator, its converters, and the file handler. The benchmark supplies the extraction target and the complete source context directly to the operator. Planning, retrieval, Executor orchestration, per-document calls, and Integra are outside the experimental boundary. A multi-document AOE instance uses one call for all its documents in their original order. [Pinned VCL source](https://github.com/unimib-datAI/VCL/tree/6b8539edaf55e621f6e551c58e32a065a28da4cf)
+
+The shared interface is `extract(task, documents, llm)`. The runner projects dataset records into the inputs listed above. `prompts.py` defines the English task instructions and JSON output contracts for use by later methods. The VCL adapter wraps the source text in VCL-style document blocks and passes the result through the operator's preformatted-string interface. This preserves original casing, scientific notation, and Markdown, which the original list formatter lowercases. The English templates preserve the original prompt's emphasis on complete, objective, source-grounded extraction and request JSON suited to the two datasets. They use the original operator's target and context state.
+
+### Install and run offline
+
+Use Python 3.11 and Git with the pinned submodules initialized. The requirements pin the OpenAI SDK for live requests, python-dotenv for local configuration, spaCy for the original file handler's import, and pytest for the offline suite. The extraction path leaves the Italian spaCy model unloaded.
+
+~~~powershell
+python -m venv .venv
+& .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+& .\.venv\Scripts\python.exe -m pip check
+& .\.venv\Scripts\python.exe -m pytest tests/ -q
+& .\.venv\Scripts\python.exe .\benchmark.py --method vcl --dataset docred --instance docred-dev-0244 --dry-run
+& .\.venv\Scripts\python.exe .\benchmark.py --method vcl --dataset aoe --instance academic_PMD_1_en --dry-run
+~~~
+
+Use `--split pilot` in place of `--instance` to simulate a whole pilot split. Dry runs invoke the actual VCL operator with a simulated LLM, use zero API requests, and read no credentials. Each run writes a JSONL file under the ignored `results/` directory. The `calls[].messages` field contains the complete rendered system and user messages. The result also stores the instance and split, prompt version and VCL commit, requested and reported model, raw output, structural validation status, errors, VCL invocation and API attempt counts, timing, and provider usage when available. The empty predictions in dry runs are simulator fixtures. Incomplete responses retain their available raw text, and failed predictions are recorded explicitly.
+
+### Manual Gemini smoke test
+
+Set `GEMINI_KEY` in the local `.env` or process environment. The runner uses `gemini-3.1-flash-lite` by default and sends the request to Google's Gemini Developer API. Google lists both Flash-Lite models below on the Free Tier. Use an API key from a Free Tier project. Each `--live` command allows one explicit pilot instance and one provider attempt. [Gemini pricing](https://aistudio.google.com/docs/pricing) · [Gemini compatibility API](https://aistudio.google.com/docs/openai)
+
+~~~powershell
+Set-Location -LiteralPath 'C:\Users\tomma\Desktop\magistrale\Secondo Anno\MiniBench_Relation_Extraction'
+& .\.venv\Scripts\python.exe .\benchmark.py --method vcl --dataset docred --instance docred-dev-0244 --live --max-input-tokens 120000 --max-output-tokens 4096
+~~~
+
+If 3.1 is unavailable for your project, rerun the command with `--model gemini-3.5-flash-lite`. You can also set `GEMINI_MODEL` in `.env`. To opt back into OpenAI, pass `--provider openai` and set `OPENAI_MODEL` plus either `OPENAI_API_KEY` or `OPEN_AI_KEY`.
+
+The default limits are 120,000 estimated input tokens and 4,096 output tokens. Before sending a live request, the runner prints the model, rendered UTF-8 size, input estimate, and output limit. It estimates input tokens using `ceil(UTF-8 bytes / 4)` over the roles and content of every rendered message. The estimate includes instructions, schema, and documents, and can differ from the provider's tokenizer count. Oversized prompts are preserved in the local trace and rejected before an API attempt. The client sends the complete prompt with SDK retries disabled. Actual usage and the local estimate appear in separate fields. Gemini uses the provider's sampling defaults. The OpenAI Responses path sends temperature zero for the supported configurations listed in the client. [Responses API](https://developers.openai.com/api/reference/python/resources/responses/methods/create)
 
 ## Method repositories inspected
 
